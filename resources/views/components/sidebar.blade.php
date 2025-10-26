@@ -34,9 +34,9 @@
 
     <div x-data="{ open: {{ in_array($currentRoute, ['barang.masuk','barang.keluar']) ? 'true' : 'false' }} }" class="flex flex-col mt-2">
         <button @click="open = !open"
-            class="flex items-center justify-between px-3 py-2 text-gray-700 font-medium transition rounded-xl shadow-sm hover:shadow-md
-            {{ in_array($currentRoute, ['barang.masuk','barang.keluar']) ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}
-            focus:outline-none">
+                class="flex items-center justify-between px-3 py-2 text-gray-700 font-medium transition rounded-xl shadow-sm hover:shadow-md
+                {{ in_array($currentRoute, ['barang.masuk','barang.keluar']) ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}
+                focus:outline-none">
             <div class="flex items-center space-x-2">
                 <img src="{{ asset('images/barang.png') }}" alt="Barang" class="w-5 h-5 object-contain">
                 <span class="text-sm">Barang</span>
@@ -46,7 +46,7 @@
             </svg>
         </button>
 
-        <div x-show="open" x-transition class="mt-1 ml-6 flex flex-col space-y-1">
+        <div x-show="open" x-transition x-cloak class="mt-1 ml-6 flex flex-col space-y-1">
             <a href="#"
                 class="px-3 py-1 flex items-center space-x-2 text-gray-700 text-sm font-medium transition rounded-xl shadow-sm hover:shadow-md
                 {{ $currentRoute == 'barang.masuk' ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}">
@@ -66,18 +66,20 @@
         Lainnya
     </div>
 
-    <a href="#"
+    @if(auth()->user()->role === 'admin')
+    <a href="{{ route('admin.users') }}"
         class="flex items-center space-x-2 px-3 py-2 text-gray-700 font-medium transition rounded-xl shadow-sm hover:shadow-md
-        {{ $currentRoute == 'master.user' ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}">
-        <img src="{{ asset('images/people.png') }}" alt="Master User" class="w-5 h-5 object-contain">
+        {{ $currentRoute == 'admin.users' ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}">
+        <img src="{{ asset('images/people.png') }}" alt="User" class="w-5 h-5 object-contain">
         <span class="text-sm">User</span>
     </a>
+    @endif
 
     <div x-data="{ open: {{ in_array($currentRoute, ['master.barang','master.satuan']) ? 'true' : 'false' }} }" class="flex flex-col mt-2">
         <button @click="open = !open"
-            class="flex items-center justify-between px-3 py-2 text-gray-700 font-medium transition rounded-xl shadow-sm hover:shadow-md
-            {{ in_array($currentRoute, ['master.barang','master.satuan']) ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}
-            focus:outline-none">
+                class="flex items-center justify-between px-3 py-2 text-gray-700 font-medium transition rounded-xl shadow-sm hover:shadow-md
+                {{ in_array($currentRoute, ['master.barang','master.satuan']) ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}
+                focus:outline-none">
             <div class="flex items-center space-x-2">
                 <img src="{{ asset('images/master-data.png') }}" alt="Master" class="w-5 h-5 object-contain">
                 <span class="text-sm">Master</span>
@@ -87,7 +89,7 @@
             </svg>
         </button>
 
-        <div x-show="open" x-transition class="mt-1 ml-6 flex flex-col space-y-1">
+        <div x-show="open" x-transition x-cloak class="mt-1 ml-6 flex flex-col space-y-1">
             <a href="#"
                 class="px-3 py-1 flex items-center space-x-2 text-gray-700 text-sm font-medium transition rounded-xl shadow-sm hover:shadow-md
                 {{ $currentRoute == 'master.barang' ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}">
@@ -103,3 +105,7 @@
         </div>
     </div>
 </div>
+
+<style>
+    [x-cloak] { display: none !important; }
+</style>

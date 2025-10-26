@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'mahasiswa@bhp.com'],
             [
-                'name' => 'Mahasiswa Contoh',
+                'name' => 'Mahasiswa',
                 'password' => Hash::make('12345'),
                 'role' => 'mahasiswa',
                 'nim' => '12345678',
