@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('jumlah');
             $table->integer('stok_sesudah');
             $table->text('keterangan')->nullable();
-            $table->bigInteger('reference_id')->nullable()->comment('bisa refer ke penggunaan_barang.id');
+            $table->bigInteger('reference_id')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->dateTime('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
