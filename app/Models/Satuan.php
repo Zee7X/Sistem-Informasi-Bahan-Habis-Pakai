@@ -3,6 +3,7 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Bahan;
 
 class Satuan extends Model
 {
@@ -13,4 +14,9 @@ class Satuan extends Model
     protected $fillable = [
         'nama'
     ];
+
+    public function bahan()
+    {
+        return $this->hasMany(Bahan::class, 'satuan_id');
+    }
 }

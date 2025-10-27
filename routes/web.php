@@ -16,9 +16,15 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users')->middleware('admin');
+    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
 
-    Route::get('/admin/satuan', [SatuanController::class, 'index'])->name('admin.satuan')->middleware('admin');
+        Route::get('/users', [AdminController::class, 'users'])->name('users');
+
+        Route::get('/satuan', [SatuanController::class, 'index'])->name('satuan.index');
+        Route::post('/satuan', [SatuanController::class, 'store'])->name('satuan.store');
+        Route::put('/satuan/{id}', [SatuanController::class, 'update'])->name('satuan.update');
+        Route::delete('/satuan/{id}', [SatuanController::class, 'destroy'])->name('satuan.destroy');
+    });
 
     Route::get('/bahan', [BahanController::class, 'index'])->name('bahan');
 
