@@ -74,11 +74,10 @@
         <span class="text-sm">User</span>
     </a>
     @endif
-
-    <div x-data="{ open: {{ in_array($currentRoute, ['master.barang','master.satuan']) ? 'true' : 'false' }} }" class="flex flex-col mt-2">
+    <div x-data="{ open: {{ in_array($currentRoute, ['master.barang','admin.satuan']) ? 'true' : 'false' }} }" class="flex flex-col mt-2">
         <button @click="open = !open"
                 class="flex items-center justify-between px-3 py-2 text-gray-700 font-medium transition rounded-xl shadow-sm hover:shadow-md
-                {{ in_array($currentRoute, ['master.barang','master.satuan']) ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}
+                {{ in_array($currentRoute, ['master.barang','admin.satuan']) ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}
                 focus:outline-none">
             <div class="flex items-center space-x-2">
                 <img src="{{ asset('images/master-data.png') }}" alt="Master" class="w-5 h-5 object-contain">
@@ -90,18 +89,21 @@
         </button>
 
         <div x-show="open" x-transition x-cloak class="mt-1 ml-6 flex flex-col space-y-1">
-            <a href="#"
+            <a href=""
                 class="px-3 py-1 flex items-center space-x-2 text-gray-700 text-sm font-medium transition rounded-xl shadow-sm hover:shadow-md
                 {{ $currentRoute == 'master.barang' ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}">
                 <img src="{{ asset('images/flask.png') }}" alt="Barang" class="w-4 h-4 object-contain">
                 <span>Barang</span>
             </a>
-            <a href="#"
+
+            @if(auth()->user()->role === 'admin')
+            <a href="{{ route('admin.satuan') }}"
                 class="px-3 py-1 flex items-center space-x-2 text-gray-700 text-sm font-medium transition rounded-xl shadow-sm hover:shadow-md
-                {{ $currentRoute == 'master.satuan' ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}">
+                {{ $currentRoute == 'admin.satuan' ? 'text-blue-700 bg-blue-50 shadow-md' : 'hover:text-blue-700 bg-white' }}">
                 <img src="{{ asset('images/atom.png') }}" alt="Satuan" class="w-4 h-4 object-contain">
                 <span>Satuan</span>
             </a>
+            @endif
         </div>
     </div>
 </div>
