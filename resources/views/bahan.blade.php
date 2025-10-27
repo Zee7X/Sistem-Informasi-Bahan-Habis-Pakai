@@ -72,7 +72,7 @@
                                 </svg>
                             </a>
                             <button 
-                                @click="$dispatch('open-delete-modal', {{ $b->id }})" 
+                                @click="$dispatch('open-delete-modal', { id: @js($b->id), name: @js($b->nama_bahan) })" 
                                 class="p-2 bg-red-100 rounded-lg shadow hover:bg-red-200 transition"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -117,4 +117,76 @@
         @endif
     </div>
 </div>
+    <div 
+        x-data="{ open: false, deleteId: null, name: '' }"
+        @open-delete-modal.window="open = true; deleteId = $event.detail.id; name = $event.detail.name"
+        x-show="open" x-cloak
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+        <div class="bg-white rounded-xl shadow-lg w-96 p-6">
+            <h2 class="text-lg font-bold mb-4">Konfirmasi Hapus</h2>
+            <p class="mb-4">Apakah kamu yakin ingin menghapus bahan <span class="font-semibold text-red-600" x-text="name"></span>?</p>
+            <div class="flex justify-end space-x-2">
+                <button @click="open = false" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">Batal</button>
+                <form :action="" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">Hapus</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div 
+        x-data="{ open: false }"
+        @open-create-modal.window="open = true"
+        x-show="open" x-cloak
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+        <div class="bg-white rounded-xl shadow-lg w-[90%] max-w-lg p-6">
+            <h2 class="text-lg font-bold mb-4">Tambah Bahan</h2>
+            <form action="" method="POST" class="space-y-3">
+                @csrf
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Kode Bahan</label>
+                    <input type="text" name="kode_bahan" required class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-400 focus:border-blue-400">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nama Bahan</label>
+                    <input type="text" name="nama_bahan" required class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-400 focus:border-blue-400">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Spesifikasi</label>
+                    <textarea name="spesifikasi" class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-400 focus:border-blue-400"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Stok</label>
+                        <input type="number" name="stok" required class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-400 focus:border-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Minimal Stok</label>
+                        <input type="number" name="minimal_stok" required class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-400 focus:border-blue-400">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Satuan</label>
+                    <input type="text" name="satuan_id" required class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-400 focus:border-blue-400">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Lokasi</label>
+                    <input type="text" name="lokasi" required class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-400 focus:border-blue-400">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Keterangan</label>
+                    <input type="text" name="keterangan" class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-400 focus:border-blue-400">
+                </div>
+
+                <div class="flex justify-end space-x-2 mt-4">
+                    <button type="button" @click="open = false" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">Batal</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
