@@ -8,10 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('barang', function (Blueprint $table) {
+        Schema::create('bahan', function (Blueprint $table) {
             $table->id(); 
-            $table->string('kode_barang', 100)->unique();
-            $table->string('nama_barang', 200);
+            $table->string('kode_bahan', 100)->unique();
+            $table->string('nama_bahan', 200);
             $table->text('spesifikasi')->nullable();
             $table->integer('stok')->default(0);
             $table->unsignedBigInteger('satuan_id')->nullable();
@@ -26,20 +26,20 @@ return new class extends Migration
                 ->onDelete('set null');
         });
 
-        Schema::table('barang', function (Blueprint $table) {
-            $table->index('kode_barang', 'idx_kode_barang');
-            $table->index('nama_barang', 'idx_nama_barang');
+        Schema::table('bahan', function (Blueprint $table) {
+            $table->index('kode_bahan', 'idx_kode_bahan');
+            $table->index('nama_bahan', 'idx_nama_bahan');
         });
     }
 
     public function down(): void
     {
-        Schema::table('barang', function (Blueprint $table) {
+        Schema::table('bahan', function (Blueprint $table) {
             $table->dropForeign(['satuan_id']);
-            $table->dropIndex('idx_kode_barang');
-            $table->dropIndex('idx_nama_barang');
+            $table->dropIndex('idx_kode_bahan');
+            $table->dropIndex('idx_nama_bahan');
         });
 
-        Schema::dropIfExists('barang');
+        Schema::dropIfExists('bahan');
     }
 };

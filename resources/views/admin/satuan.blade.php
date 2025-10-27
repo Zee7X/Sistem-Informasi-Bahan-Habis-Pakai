@@ -1,17 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div x-data="{ search: @json(request('search', '')) }" class="overflow-x-auto p-4">
+    <div 
+        x-data="{ search: @json(request('search', '')) }" 
+        key="{{ Route::currentRouteName() }}" 
+        class="overflow-x-auto p-4"
+    >
 
     <div class="flex flex-col md:flex-row justify-between items-center mb-4 space-y-2 md:space-y-0">
         <p class="text-gray-800 font-medium text-lg">Master Satuan</p>
-
         <div class="flex items-center space-x-2">
-            <form @submit.prevent="window.location.href='{{ route('admin.satuan') }}?search=' + encodeURIComponent(search)">
+            <form method="GET" action="{{ route('admin.satuan') }}">
                 <input 
-                    type="text" 
-                    x-model="search" 
-                    placeholder="Search..." 
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Search..."
                     class="border border-gray-300 rounded-lg p-2 focus:ring-blue-400 focus:border-blue-400"
                 >
             </form>

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->dateTime('created_at')->useCurrent();
 
             $table->foreign('penggunaan_id')
-                ->references('id')->on('penggunaan_barang')
+                ->references('id')->on('penggunaan_bahan')
                 ->onDelete('cascade');
 
             $table->foreign('user_id')

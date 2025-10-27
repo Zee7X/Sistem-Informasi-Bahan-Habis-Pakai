@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('penggunaan_barang', function (Blueprint $table) {
+        Schema::create('penggunaan_bahan', function (Blueprint $table) {
             $table->id();
             $table->date('tanggal_pemakaian');
             $table->dateTime('waktu_input')->useCurrent();
@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('nama_pengisi', 200)->nullable();
             $table->string('nim_pengisi', 50)->nullable();
 
-            $table->unsignedBigInteger('barang_id')->nullable();
-            $table->string('nama_barang_text', 255)->nullable();
+            $table->unsignedBigInteger('bahan_id')->nullable();
+            $table->string('nama_bahan_text', 255)->nullable();
 
             $table->integer('jumlah')->default(1);
             $table->unsignedBigInteger('satuan_id')->nullable();
@@ -35,7 +35,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('requester_user_id')->references('id')->on('users')->nullOnDelete();
-            $table->foreign('barang_id')->references('id')->on('barang')->nullOnDelete();
+            $table->foreign('bahan_id')->references('id')->on('bahan')->nullOnDelete();
             $table->foreign('satuan_id')->references('id')->on('satuan')->nullOnDelete();
             $table->foreign('approved_by')->references('id')->on('users')->nullOnDelete();
 
@@ -46,6 +46,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('penggunaan_barang');
+        Schema::dropIfExists('penggunaan_bahan');
     }
 };
