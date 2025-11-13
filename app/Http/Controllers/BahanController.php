@@ -2,30 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BahanRequest;
 use App\Models\Bahan;
+use App\Services\BahanService;
 use Illuminate\Http\Request;
+use App\Services\SatuanService;
 
 class BahanController extends Controller
 {
+    protected BahanService $service;
+    protected SatuanService $satuanService;
+
+    public function __construct(BahanService $service, SatuanService $satuanService)
+    {
+        $this->service = $service;
+        $this->satuanService = $satuanService;
+    }
+
     public function index(Request $request)
     {
         $search = $request->query('search');
+        $bahan = $this->service->list($search);
+        $satuan = $this->satuanService->all();
+        return view('bahan', compact('bahan', 'satuan'));
+    }
 
-        $bahan = Bahan::when($search, function ($query, $search) {
-            return $query->where(function ($q) use ($search) {
-                $q->where('kode_bahan', 'like', "%{$search}%")
-                    ->orWhere('nama_bahan', 'like', "%{$search}%")
-                    ->orWhere('spesifikasi', 'like', "%{$search}%")
-                    ->orWhere('stok', 'like', "%{$search}%")
-                    ->orWhere('minimal_stok', 'like', "%{$search}%")
-                    ->orWhere('lokasi', 'like', "%{$search}%")
-                    ->orWhere('keterangan', 'like', "%{$search}%");
-            });
-        })
-            ->orderBy('id', 'asc')
-            ->paginate(10)
-            ->withQueryString();
+    public function store(BahanRequest $request)
+    {
+        $this->service->create($request->validated());
+        return redirect()->back()->with('success', 'Bahan berhasil ditambahkan.');
+    }
 
-        return view('bahan', compact('bahan'));
+    public function update(BahanRequest $request, Bahan $bahan)
+    {
+        $this->service->update($bahan, $request->validated());
+        return redirect()->back()->with('success', 'Bahan berhasil diperbarui.');
+    }
+
+    public function destroy(Bahan $bahan)
+    {
+        try {
+            $this->service->delete($bahan);
+            return redirect()->back()->with('success', 'Bahan berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

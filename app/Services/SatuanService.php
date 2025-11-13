@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use App\Models\Satuan;
-use Exception;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\QueryException;
 
 class SatuanService
 {
-    public function getAll($search = null, $perPage = 10)
+    public function list($search = null, int $perPage = 10): LengthAwarePaginator
     {
         return Satuan::when($search, function ($query, $search) {
             $query->where('nama', 'like', "%{$search}%");
@@ -17,31 +18,31 @@ class SatuanService
             ->withQueryString();
     }
 
-    public function create(array $data)
+    public function create(array $data): Satuan
     {
         return Satuan::create($data);
     }
 
-    public function update($id, array $data)
+    public function update(Satuan $satuan, array $data): Satuan
     {
-        $satuan = Satuan::findOrFail($id);
         $satuan->update($data);
         return $satuan;
     }
 
-    public function delete($id)
+    public function delete(Satuan $satuan): void
     {
-        $satuan = Satuan::findOrFail($id);
-
-        if ($satuan->bahan()->exists()) {
-            throw new Exception('Satuan tidak dapat dihapus karena masih digunakan pada data bahan.');
+        try {
+            if ($satuan->bahan()->exists()) {
+                throw new \Exception('Satuan tidak dapat dihapus karena masih digunakan pada data bahan.');
+            }
+            $satuan->delete();
+        } catch (QueryException $e) {
+            throw new \Exception('Satuan tidak dapat dihapus karena masih digunakan pada data lain.');
         }
-
-        return $satuan->delete();
     }
 
-    public function find($id)
+    public function all(): \Illuminate\Database\Eloquent\Collection
     {
-        return Satuan::findOrFail($id);
+        return Satuan::orderBy('nama')->get();
     }
 }

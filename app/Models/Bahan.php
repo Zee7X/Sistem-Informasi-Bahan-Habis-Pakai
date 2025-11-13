@@ -3,6 +3,7 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PenggunaanBahan;
 
 
 class Bahan extends Model
@@ -21,4 +22,9 @@ class Bahan extends Model
         'lokasi',
         'keterangan'
     ];
+
+     public function penggunaan()
+    {
+        return $this->hasMany(PenggunaanBahan::class, 'bahan_id');
+    }
 }

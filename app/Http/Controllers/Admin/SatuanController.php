@@ -6,40 +6,41 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\SatuanRequest;
 use App\Services\SatuanService;
+use App\Models\Satuan;
 use Exception;
 
 class SatuanController extends Controller
 {
-    protected $satuanService;
+    protected SatuanService $service;
 
-    public function __construct(SatuanService $satuanService)
+    public function __construct(SatuanService $service)
     {
-        $this->satuanService = $satuanService;
+        $this->service = $service;
     }
 
     public function index(Request $request)
     {
         $search = $request->query('search');
-        $satuan = $this->satuanService->getAll($search);
+        $satuan = $this->service->list($search);
         return view('admin.satuan', compact('satuan'));
     }
 
     public function store(SatuanRequest $request)
     {
-        $this->satuanService->create($request->validated());
+        $this->service->create($request->validated());
         return redirect()->back()->with('success', 'Satuan berhasil ditambahkan.');
     }
 
-    public function update(SatuanRequest $request, $id)
+    public function update(SatuanRequest $request, Satuan $satuan)
     {
-        $this->satuanService->update($id, $request->validated());
+        $this->service->update($satuan, $request->validated());
         return redirect()->back()->with('success', 'Satuan berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy(Satuan $satuan)
     {
         try {
-            $this->satuanService->delete($id);
+            $this->service->delete($satuan);
             return redirect()->back()->with('success', 'Satuan berhasil dihapus.');
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
