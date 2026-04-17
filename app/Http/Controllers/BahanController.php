@@ -22,9 +22,16 @@ class BahanController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
-        $bahan = $this->service->list($search);
+        $sort = $request->query('sort', 'latest');
+        $bahan = $this->service->list($search, $sort);
         $satuan = $this->satuanService->all();
-        return view('bahan', compact('bahan', 'satuan'));
+        
+        // Statistik Global (Database Level)
+        $totalBahan = \App\Models\Bahan::count();
+        $stokAman = \App\Models\Bahan::whereColumn('stok', '>=', 'minimal_stok')->count();
+        $perluRestock = \App\Models\Bahan::whereColumn('stok', '<', 'minimal_stok')->count();
+
+        return view('bahan', compact('bahan', 'satuan', 'totalBahan', 'stokAman', 'perluRestock'));
     }
 
     public function store(BahanRequest $request)

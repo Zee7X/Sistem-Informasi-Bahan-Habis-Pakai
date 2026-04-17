@@ -1,12 +1,13 @@
 <x-guest-layout>
-    <div class="min-h-screen flex flex-col md:flex-row bg-white">
-
-        <div class="hidden md:flex md:w-1/2 bg-cover bg-right" 
-            style="background-image: url('{{ asset('images/login-bg.jpeg') }}'); background-size: contain; background-repeat: no-repeat;">  
+    @section('title', 'Login')
+    <div class="min-h-screen flex flex-col md:flex-row bg-white overflow-hidden">
+        
+        <div class="hidden md:flex md:w-[65%] items-center justify-center p-8 bg-slate-50/30">
+            <img src="{{ asset('images/login-bg.jpeg') }}" class="max-w-[85%] h-auto object-contain">
         </div>
 
-        <div class="flex w-full md:w-1/2 items-center justify-end px-10 py-12">
-            <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
+        <div class="flex w-full md:w-[35%] items-center justify-end p-8 lg:p-12">
+            <div class="w-full max-w-md bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-8 lg:p-10 border border-slate-200">
 
                 <div class="text-center mb-8">
                     <h1 class="text-2xl font-extrabold text-blue-900 uppercase tracking-wide leading-tight">
@@ -24,7 +25,7 @@
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                         <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" 
+                            class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all duration-300" 
                             placeholder="example@email.com">
                         <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-500 text-sm" />
                     </div>
@@ -33,12 +34,16 @@
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                         <div class="relative">
                             <input id="password" type="password" name="password" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition pr-10"
+                                class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all duration-300 pr-12"
                                 placeholder="••••••••">
-                            <button type="button" id="togglePassword" class="absolute inset-y-0 right-2 flex items-center px-2 text-gray-400 hover:text-gray-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path id="eyeIcon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            <button type="button" id="togglePassword"
+                                class="absolute inset-y-0 right-2 flex items-center px-2 text-gray-400 hover:text-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path id="eyeIcon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
                             </button>
                         </div>

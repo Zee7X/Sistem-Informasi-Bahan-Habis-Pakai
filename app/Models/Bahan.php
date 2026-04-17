@@ -27,4 +27,9 @@ class Bahan extends Model
     {
         return $this->hasMany(PenggunaanBahan::class, 'bahan_id');
     }
+
+    public function satuan()
+    {
+        return $this->belongsTo(Satuan::class, 'satuan_id');
+    }
 }

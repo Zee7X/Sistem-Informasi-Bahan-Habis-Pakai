@@ -14,7 +14,7 @@ class BahanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'kode_bahan'     => 'required|string|max:100|unique:bahan,kode_bahan,' . $this->bahan,
+            'kode_bahan'     => 'required|string|max:100|unique:bahan,kode_bahan,' . ($this->bahan?->id ?? $this->bahan),
             'nama_bahan'     => 'required|string|max:200',
             'spesifikasi'    => 'nullable|string',
             'satuan_id'      => 'required|exists:satuan,id',
