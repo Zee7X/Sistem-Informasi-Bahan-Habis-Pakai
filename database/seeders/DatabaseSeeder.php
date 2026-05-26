@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             SatuanSeeder::class,
             BahanSeeder::class,
-            ProjectDummySeeder::class,
+            ModulPraktikumSeeder::class,
+            DummyDataSeeder::class,
         ]);
     }
 }

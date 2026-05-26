@@ -7,6 +7,7 @@ use App\Models\Bahan;
 use App\Services\BahanService;
 use Illuminate\Http\Request;
 use App\Services\SatuanService;
+use Inertia\Inertia;
 
 class BahanController extends Controller
 {
@@ -21,17 +22,17 @@ class BahanController extends Controller
 
     public function index(Request $request)
     {
-        $search = $request->query('search');
-        $sort = $request->query('sort', 'latest');
-        $bahan = $this->service->list($search, $sort);
-        $satuan = $this->satuanService->all();
-        
-        // Statistik Global (Database Level)
-        $totalBahan = \App\Models\Bahan::count();
-        $stokAman = \App\Models\Bahan::whereColumn('stok', '>=', 'minimal_stok')->count();
-        $perluRestock = \App\Models\Bahan::whereColumn('stok', '<', 'minimal_stok')->count();
+        $filters = $request->only('search', 'sort');
+        $bahan   = $this->service->list($filters['search'] ?? null, $filters['sort'] ?? 'latest');
+        $satuan  = $this->satuanService->all();
 
-        return view('bahan', compact('bahan', 'satuan', 'totalBahan', 'stokAman', 'perluRestock'));
+        $stats = [
+            'total'       => Bahan::count(),
+            'stok_aman'   => Bahan::whereColumn('stok', '>=', 'minimal_stok')->count(),
+            'perlu_restock' => Bahan::whereColumn('stok', '<', 'minimal_stok')->count(),
+        ];
+
+        return Inertia::render('Admin/Bahan/Index', compact('bahan', 'satuan', 'filters', 'stats'));
     }
 
     public function store(BahanRequest $request)

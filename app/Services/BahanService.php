@@ -10,7 +10,7 @@ class BahanService
 {
     public function list($search = null, $sort = 'latest', int $perPage = 10): LengthAwarePaginator
     {
-        $query = Bahan::query();
+        $query = Bahan::with('satuan');
 
         if ($search) {
             $query->where(function ($q) use ($search) {

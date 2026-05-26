@@ -3,115 +3,159 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bahan;
-use App\Models\PenggunaanBahan;
+use App\Models\ModulPraktikum;
+use App\Models\Pengajuan;
+use App\Services\PengajuanService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PengajuanController extends Controller
 {
-    public function index()
+    public function __construct(
+        private readonly PengajuanService $service
+    ) {}
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // ADMIN: Lihat semua pengajuan
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function index(Request $request): Response
     {
-        $user = Auth::user();
-        
-        if ($user->role === 'mahasiswa') {
-            $pengajuan = PenggunaanBahan::where('requester_user_id', $user->id)
-                ->with('bahan')
-                ->latest()
-                ->paginate(10);
-        } else {
-            $pengajuan = PenggunaanBahan::with(['bahan', 'requester'])
-                ->latest()
-                ->paginate(10);
+        $query = Pengajuan::with(['user', 'modul', 'items'])
+            ->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
         }
 
-        return view('pengajuan.index', compact('pengajuan'));
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_pengajuan', 'like', "%{$search}%")
+                  ->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        $pengajuan = $query->paginate(15)->withQueryString();
+        $filters   = $request->only('status', 'search');
+
+        return Inertia::render('Admin/Pengajuan/Index', compact('pengajuan', 'filters'));
     }
 
-    public function create()
+    public function show(Pengajuan $pengajuan): Response
     {
-        $bahan = Bahan::where('stok', '>', 0)->get();
-        return view('pengajuan.create', compact('bahan'));
+        $pengajuan->load(['user', 'modul', 'items.bahan.satuan', 'approver', 'completer']);
+        return Inertia::render('Admin/Pengajuan/Show', compact('pengajuan'));
     }
 
-    public function store(Request $request)
+    // ──────────────────────────────────────────────────────────────────────────
+    // MAHASISWA: Pengajuan milik sendiri
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function myIndex(Request $request): Response
+    {
+        $pengajuan = Pengajuan::with(['items', 'modul'])
+            ->where('user_id', Auth::id())
+            ->when($request->search, function ($q) use ($request) {
+                $q->where(function ($q2) use ($request) {
+                    $q2->where('kode_pengajuan', 'like', "%{$request->search}%")
+                       ->orWhere('mata_kuliah', 'like', "%{$request->search}%")
+                       ->orWhere('kelompok', 'like', "%{$request->search}%");
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $filters = $request->only('search');
+        return Inertia::render('Mahasiswa/Pengajuan/Index', compact('pengajuan', 'filters'));
+    }
+
+    public function create(): Response
+    {
+        $moduls = ModulPraktikum::active()->with('items.bahan.satuan')->orderBy('nama_modul')->get();
+        $bahan  = Bahan::where('stok', '>', 0)->with('satuan')->orderBy('nama_bahan')->get();
+
+        return Inertia::render('Mahasiswa/Pengajuan/Create', compact('moduls', 'bahan'));
+    }
+
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'bahan_id' => 'required|exists:bahan,id',
-            'jumlah' => 'required|integer|min:1',
-            'tanggal_pemakaian' => 'required|date',
-            'mata_kuliah' => 'required|string|max:200',
-            'kelas' => 'required|string|max:100',
-            'kelompok' => 'nullable|string|max:100',
-            'keterangan' => 'nullable|string',
+            'jenis'           => 'required|in:modul,mandiri',
+            'modul_id'        => 'nullable|exists:modul_praktikum,id|required_if:jenis,modul',
+            'mata_kuliah'     => 'nullable|string|max:200',
+            'kelas'           => 'nullable|string|max:100',
+            'kelompok'        => 'nullable|string|max:100',
+            'jumlah_anggota'  => 'nullable|integer|min:1|max:20',
+            'tanggal_pakai'   => 'required|date|after_or_equal:today',
+            'keterangan'      => 'nullable|string|max:1000',
+            'items'           => 'required|array|min:1',
+            'items.*.bahan_id'=> 'required|exists:bahan,id',
+            'items.*.jumlah'  => 'required|numeric|min:0.01',
         ]);
 
-        $bahan = Bahan::findOrFail($validated['bahan_id']);
-        
-        // Cek stok
-        if ($bahan->stok < $validated['jumlah']) {
-            return back()->with('error', 'Stok tidak mencukupi. Stok tersedia: ' . $bahan->stok);
+        try {
+            $this->service->store($validated, Auth::user());
+            return redirect()->route('mahasiswa.pengajuan.index')
+                ->with('success', 'Pengajuan berhasil dikirim dan menunggu review laboran.');
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage())->withInput();
         }
-
-        $user = Auth::user();
-
-        PenggunaanBahan::create([
-            'tanggal_pemakaian' => $validated['tanggal_pemakaian'],
-            'requester_user_id' => $user->id,
-            'nama_pengisi' => $user->name,
-            'nim_pengisi' => $user->nim,
-            'bahan_id' => $validated['bahan_id'],
-            'jumlah' => $validated['jumlah'],
-            'satuan_id' => $bahan->satuan_id,
-            'mata_kuliah' => $validated['mata_kuliah'],
-            'kelas' => $validated['kelas'],
-            'kelompok' => $validated['kelompok'],
-            'keterangan' => $validated['keterangan'],
-            'status' => 'pending',
-        ]);
-
-        return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil dikirim dan menunggu approval.');
     }
 
-    public function approve(PenggunaanBahan $pengajuan)
+    public function showMahasiswa(Pengajuan $pengajuan): Response
     {
-        if (Auth::user()->role !== 'admin') {
-            abort(403);
-        }
-
-        if ($pengajuan->status !== 'pending') {
-            return back()->with('error', 'Hanya pengajuan pending yang bisa di-approve.');
-        }
-
-        $bahan = $pengajuan->bahan;
-
-        if ($bahan->stok < $pengajuan->jumlah) {
-            return back()->with('error', 'Stok bahan tidak mencukupi untuk approval ini.');
-        }
-
-        // Jalankan transaksi stok
-        $bahan->decrement('stok', $pengajuan->jumlah);
-        
-        $pengajuan->update([
-            'status' => 'approved',
-            'approved_by' => Auth::id(),
-            'approved_at' => now(),
-        ]);
-
-        return back()->with('success', 'Pengajuan berhasil disetujui. Stok telah berkurang.');
+        // Pastikan mahasiswa hanya bisa lihat pengajuannya sendiri
+        abort_unless($pengajuan->user_id === Auth::id(), 403);
+        $pengajuan->load(['items.bahan.satuan', 'modul', 'approver', 'completer']);
+        return Inertia::render('Mahasiswa/Pengajuan/Show', compact('pengajuan'));
     }
 
-    public function reject(PenggunaanBahan $pengajuan)
-    {
-        if (Auth::user()->role !== 'admin') {
-            abort(403);
-        }
+    // ──────────────────────────────────────────────────────────────────────────
+    // ADMIN: Aksi state machine
+    // ──────────────────────────────────────────────────────────────────────────
 
-        $pengajuan->update([
-            'status' => 'rejected',
-            'approved_by' => Auth::id(),
-            'approved_at' => now(),
+    public function approve(Pengajuan $pengajuan): RedirectResponse
+    {
+        try {
+            $this->service->approve($pengajuan, Auth::user());
+            return back()->with('success', "Pengajuan {$pengajuan->kode_pengajuan} berhasil disetujui.");
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function reject(Request $request, Pengajuan $pengajuan): RedirectResponse
+    {
+        $request->validate([
+            'reject_reason' => 'required|string|min:10|max:500',
+        ], [
+            'reject_reason.required' => 'Alasan penolakan wajib diisi.',
+            'reject_reason.min'      => 'Alasan penolakan minimal 10 karakter.',
         ]);
 
-        return back()->with('success', 'Pengajuan telah ditolak.');
+        try {
+            $this->service->reject($pengajuan, Auth::user(), $request->reject_reason);
+            return back()->with('success', "Pengajuan {$pengajuan->kode_pengajuan} telah ditolak.");
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * CRITICAL: Stok dipotong di sini, bukan saat approve.
+     */
+    public function complete(Pengajuan $pengajuan): RedirectResponse
+    {
+        try {
+            $this->service->complete($pengajuan, Auth::user());
+            return back()->with('success', "Pengajuan {$pengajuan->kode_pengajuan} selesai. Stok telah diperbarui.");
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 }

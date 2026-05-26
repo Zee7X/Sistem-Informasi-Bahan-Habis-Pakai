@@ -8,6 +8,7 @@ use App\Http\Requests\SatuanRequest;
 use App\Services\SatuanService;
 use App\Models\Satuan;
 use Exception;
+use Inertia\Inertia;
 
 class SatuanController extends Controller
 {
@@ -22,7 +23,8 @@ class SatuanController extends Controller
     {
         $search = $request->query('search');
         $satuan = $this->service->list($search);
-        return view('admin.satuan', compact('satuan'));
+        $filters = $request->only('search');
+        return Inertia::render('Admin/Satuan/Index', compact('satuan', 'filters'));
     }
 
     public function store(SatuanRequest $request)
