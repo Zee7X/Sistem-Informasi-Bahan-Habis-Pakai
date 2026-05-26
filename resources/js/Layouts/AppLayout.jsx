@@ -5,7 +5,7 @@ import {
     BarChart3, Users, Tag, BookOpen, ClipboardCheck,
     FileText, ChevronLeft, ChevronRight, LogOut, Menu, X,
     ChevronsUpDown, Settings, HelpCircle, Keyboard, Check, User,
-    Bell, Search
+    Bell, Search, History
 } from 'lucide-react';
 
 const navConfig = {
@@ -29,9 +29,10 @@ const navConfig = {
             ],
         },
         {
-            section: 'Laporan',
+            section: 'Laporan & Log',
             items: [
-                { label: 'Laporan',         href: '/admin/laporan',         icon: BarChart3,       route: 'admin.laporan' },
+                { label: 'Laporan BHP',     href: '/admin/laporan',         icon: BarChart3,       route: 'admin.laporan' },
+                { label: 'Log Stok',        href: '/admin/log-stok',        icon: History,         route: 'admin.log-stok' },
             ],
         },
     ],

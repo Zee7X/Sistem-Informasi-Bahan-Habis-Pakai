@@ -3,6 +3,8 @@ import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
 import { Plus, X, Pencil, Trash2, Search } from 'lucide-react';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 export default function Index({ satuan, filters }) {
     const [showCreate, setShowCreate] = useState(false);
@@ -13,7 +15,21 @@ export default function Index({ satuan, filters }) {
 
     const submitCreate = (e) => {
         e.preventDefault();
-        createForm.post('/admin/satuan', { onSuccess: () => { createForm.reset(); setShowCreate(false); } });
+        createForm.post('/admin/satuan', { 
+            onSuccess: () => { 
+                createForm.reset(); 
+                setShowCreate(false); 
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: 'Satuan baru berhasil ditambahkan.',
+                    icon: 'success',
+                    background: '#ffffff',
+                    color: '#1f2937',
+                    confirmButtonColor: '#7c3aed',
+                    timer: 2000
+                });
+            } 
+        });
     };
     const openEdit = (s) => {
         setEditData(s);
@@ -21,12 +37,53 @@ export default function Index({ satuan, filters }) {
     };
     const submitEdit = (e) => {
         e.preventDefault();
-        editForm.put(`/admin/satuan/${editData.id}`, { onSuccess: () => setEditData(null) });
+        editForm.put(`/admin/satuan/${editData.id}`, { 
+            onSuccess: () => {
+                setEditData(null); 
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: 'Satuan berhasil diperbarui.',
+                    icon: 'success',
+                    background: '#ffffff',
+                    color: '#1f2937',
+                    confirmButtonColor: '#7c3aed',
+                    timer: 2000
+                });
+            } 
+        });
     };
     const handleDelete = (s) => {
-        if (confirm(`Hapus satuan "${s.nama}"?`)) {
-            router.delete(`/admin/satuan/${s.id}`);
-        }
+        Swal.fire({
+            title: 'Hapus Satuan?',
+            text: `Apakah Anda yakin ingin menghapus satuan "${s.nama}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            background: '#ffffff',
+            color: '#1f2937',
+            customClass: {
+                popup: 'rounded-xl shadow-2xl border border-gray-200'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(`/admin/satuan/${s.id}`, {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: 'Dihapus!',
+                            text: 'Satuan telah berhasil dihapus.',
+                            icon: 'success',
+                            background: '#ffffff',
+                            color: '#1f2937',
+                            confirmButtonColor: '#7c3aed',
+                            timer: 2000
+                        });
+                    }
+                });
+            }
+        });
     };
     const handleSearch = (e) => {
         e.preventDefault();

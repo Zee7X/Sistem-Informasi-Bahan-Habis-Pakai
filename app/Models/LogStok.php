@@ -39,4 +39,14 @@ class LogStok extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function pengajuan(): BelongsTo
+    {
+        return $this->belongsTo(Pengajuan::class, 'reference_id');
+    }
+
+    public function bahanMasuk(): BelongsTo
+    {
+        return $this->belongsTo(BahanMasuk::class, 'reference_id');
+    }
 }

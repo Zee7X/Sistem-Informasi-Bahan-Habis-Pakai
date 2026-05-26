@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BahanMasukController;
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
+use App\Http\Controllers\Admin\LogStokController as AdminLogStokController;
 use App\Http\Controllers\Admin\ModulPraktikumController;
 use App\Http\Controllers\Admin\SatuanController;
 use App\Http\Controllers\Admin\StockOpnameController;
@@ -92,6 +93,10 @@ Route::middleware('auth')->group(function () {
 
         // Laporan
         Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/laporan/export', [AdminLaporanController::class, 'export'])->name('laporan.export');
+
+        // Log Stok
+        Route::get('/log-stok', [AdminLogStokController::class, 'index'])->name('log-stok.index');
     });
 
     // ────────────────────────────────────────────────────────

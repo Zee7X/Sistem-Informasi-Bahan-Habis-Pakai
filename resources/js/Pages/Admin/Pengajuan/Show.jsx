@@ -2,6 +2,8 @@ import { Head, Link, useForm, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import { ArrowLeft, CheckCircle, XCircle, Package } from 'lucide-react';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 function StatusChip({ status }) {
     const map = {
@@ -22,19 +24,140 @@ export default function Show({ pengajuan }) {
     const { data, setData, post, processing } = useForm({ reject_reason: '' });
 
     const handleApprove = () => {
-        if (confirm('Setujui pengajuan ini?')) {
-            router.post(`/admin/pengajuan/${pengajuan.id}/approve`);
-        }
+        Swal.fire({
+            title: 'Setujui Pengajuan BHP?',
+            text: `Apakah Anda yakin ingin menyetujui pengajuan ${pengajuan.kode_pengajuan}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#7c3aed',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Setujui',
+            cancelButtonText: 'Batal',
+            background: '#ffffff',
+            color: '#1f2937',
+            customClass: {
+                popup: 'rounded-xl shadow-2xl border border-gray-200'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.post(`/admin/pengajuan/${pengajuan.id}/approve`, {}, {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: 'Berhasil disetujui!',
+                            text: 'Pengajuan BHP kini berstatus Approved.',
+                            icon: 'success',
+                            background: '#ffffff',
+                            color: '#1f2937',
+                            confirmButtonColor: '#7c3aed',
+                            timer: 2000,
+                            timerProgressBar: true
+                        });
+                    },
+                    onError: () => {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat memproses persetujuan.',
+                            icon: 'error',
+                            background: '#ffffff',
+                            color: '#1f2937',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    }
+                });
+            }
+        });
     };
+
     const handleComplete = () => {
-        if (confirm('Tandai selesai? Stok akan dikurangi otomatis.')) {
-            router.post(`/admin/pengajuan/${pengajuan.id}/complete`);
-        }
+        Swal.fire({
+            title: 'Tandai Selesai & Serahkan?',
+            text: 'Stok fisik bahan di laboratorium akan dikurangi secara otomatis saat transaksi selesai.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Selesai!',
+            cancelButtonText: 'Batal',
+            background: '#ffffff',
+            color: '#1f2937',
+            customClass: {
+                popup: 'rounded-xl shadow-2xl border border-gray-200'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.post(`/admin/pengajuan/${pengajuan.id}/complete`, {}, {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: 'Transaksi Selesai!',
+                            text: 'Bahan telah diserahkan fisik dan stok berhasil dikurangi.',
+                            icon: 'success',
+                            background: '#ffffff',
+                            color: '#1f2937',
+                            confirmButtonColor: '#10b981',
+                            timer: 2500,
+                            timerProgressBar: true
+                        });
+                    },
+                    onError: (errors) => {
+                        const msg = Object.values(errors).join('\n') || 'Gagal menyelesaikan pengajuan.';
+                        Swal.fire({
+                            title: 'Gagal Menyelesaikan!',
+                            text: msg,
+                            icon: 'error',
+                            background: '#ffffff',
+                            color: '#1f2937',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    }
+                });
+            }
+        });
     };
+
     const handleReject = (e) => {
         e.preventDefault();
-        post(`/admin/pengajuan/${pengajuan.id}/reject`, {
-            onSuccess: () => setShowRejectForm(false),
+        Swal.fire({
+            title: 'Tolak Pengajuan BHP?',
+            text: 'Apakah Anda yakin ingin menolak permohonan bahan praktikum ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Tolak!',
+            cancelButtonText: 'Batal',
+            background: '#ffffff',
+            color: '#1f2937',
+            customClass: {
+                popup: 'rounded-xl shadow-2xl border border-gray-200'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(`/admin/pengajuan/${pengajuan.id}/reject`, {
+                    onSuccess: () => {
+                        setShowRejectForm(false);
+                        Swal.fire({
+                            title: 'Ditolak!',
+                            text: 'Pengajuan BHP telah ditolak.',
+                            icon: 'info',
+                            background: '#ffffff',
+                            color: '#1f2937',
+                            confirmButtonColor: '#ef4444',
+                            timer: 2000,
+                            timerProgressBar: true
+                        });
+                    },
+                    onError: () => {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Gagal memproses penolakan.',
+                            icon: 'error',
+                            background: '#ffffff',
+                            color: '#1f2937',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    }
+                });
+            }
         });
     };
 
