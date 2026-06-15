@@ -3,12 +3,44 @@ import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
 import { Plus, X, Pencil, Trash2, BookOpen, Search } from 'lucide-react';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 export default function Index({ moduls, filters }) {
     const [search, setSearch] = useState(filters?.search ?? '');
 
     const handleDelete = (m) => {
-        if (confirm(`Hapus modul "${m.nama_modul}"?`)) router.delete(`/admin/modul-praktikum/${m.id}`);
+        Swal.fire({
+            title: 'Hapus Modul Praktikum?',
+            html: `Apakah Anda yakin ingin menghapus modul <strong>"${m.nama_modul}"</strong>?<br><small class="text-gray-500">Semua item bahan dalam modul ini akan ikut terhapus.</small>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            background: '#ffffff',
+            color: '#1f2937',
+            customClass: {
+                popup: 'rounded-xl shadow-2xl border border-gray-200'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(`/admin/modul-praktikum/${m.id}`, {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: 'Dihapus!',
+                            text: 'Modul praktikum telah berhasil dihapus.',
+                            icon: 'success',
+                            background: '#ffffff',
+                            color: '#1f2937',
+                            confirmButtonColor: '#7c3aed',
+                            timer: 2000
+                        });
+                    }
+                });
+            }
+        });
     };
     const handleSearch = (e) => {
         e.preventDefault();

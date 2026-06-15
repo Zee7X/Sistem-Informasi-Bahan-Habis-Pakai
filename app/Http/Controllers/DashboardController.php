@@ -43,7 +43,6 @@ class DashboardController extends Controller
             ->get();
 
         $recentPengajuan = Pengajuan::with(['user', 'items'])
-            ->where('status', 'pending_review')
             ->latest()
             ->take(5)
             ->get();

@@ -145,25 +145,46 @@ export default function Create({ moduls, bahan }) {
                                     <p className="text-sm text-text-secondary text-center py-4">Pilih modul untuk melihat daftar bahan.</p>
                                 )
                             ) : data.jenis === 'mandiri' ? (
-                                /* Editable mandiri items */
-                                data.items.map((item, i) => (
-                                    <div key={i} className="flex gap-2 items-start">
-                                        <div className="flex-1">
-                                            <select value={item.bahan_id} onChange={e => updateItem(i, 'bahan_id', e.target.value)} required className="input">
-                                                <option value="">Pilih bahan...</option>
-                                                {bahan?.map(b => <option key={b.id} value={b.id}>{b.nama_bahan} ({b.stok} {b.satuan?.nama})</option>)}
-                                            </select>
-                                        </div>
-                                        <div className="w-24">
-                                            <input type="number" min="0.01" step="0.01" value={item.jumlah} onChange={e => updateItem(i, 'jumlah', e.target.value)} required placeholder="Jml" className="input" />
-                                        </div>
-                                        {data.items.length > 1 && (
-                                            <button type="button" onClick={() => removeItem(i)} className="btn-ghost btn-sm px-1.5 mt-0.5">
-                                                <Trash2 size={13} className="text-error" />
-                                            </button>
-                                        )}
-                                    </div>
-                                ))
+    /* Editable mandiri items */
+    data.items.map((item, i) => {
+        const selectedBahan = bahan?.find(b => String(b.id) === String(item.bahan_id));
+        const isOverStock = selectedBahan && parseFloat(item.jumlah) > parseFloat(selectedBahan.stok);
+
+        return (
+            <div key={i} className="flex flex-col gap-1">
+                <div className="flex gap-2 items-start">
+                    <div className="flex-1">
+                        <select value={item.bahan_id} onChange={e => updateItem(i, 'bahan_id', e.target.value)} required className="input">
+                            <option value="">Pilih bahan...</option>
+                            {bahan?.map(b => <option key={b.id} value={b.id}>{b.nama_bahan} (Stok: {b.stok} {b.satuan?.nama})</option>)}
+                        </select>
+                    </div>
+                    <div className="w-24">
+                        <input
+                            type="number"
+                            min="0.01"
+                            step="0.01"
+                            value={item.jumlah}
+                            onChange={e => updateItem(i, 'jumlah', e.target.value)}
+                            required
+                            placeholder="Jml"
+                            className={`input ${isOverStock ? 'border-error bg-error/10' : ''}`}
+                        />
+                    </div>
+                    {data.items.length > 1 && (
+                        <button type="button" onClick={() => removeItem(i)} className="btn-ghost btn-sm px-1.5 mt-0.5">
+                            <Trash2 size={13} className="text-error" />
+                        </button>
+                    )}
+                </div>
+                {isOverStock && (
+                    <p className="text-[10px] text-error font-semibold">
+                        Jumlah melebihi stok tersedia ({selectedBahan.stok} {selectedBahan.satuan?.nama})
+                    </p>
+                )}
+            </div>
+        );
+    })
                             ) : (
                                 <p className="text-sm text-text-secondary text-center py-4">Pilih jenis pengajuan di atas.</p>
                             )}

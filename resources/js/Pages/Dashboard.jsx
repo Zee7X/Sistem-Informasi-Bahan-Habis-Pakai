@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Head, usePage, Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
-import { 
-    FlaskConical, Users, Clock, AlertTriangle, ArrowRight, 
-    BarChart3, Check, ClipboardList, PackagePlus 
+import {
+    FlaskConical, Users, Clock, AlertTriangle, ArrowRight,
+    BarChart3, Check, ClipboardList, PackagePlus
 } from 'lucide-react';
 
 function StatCard({ label, value, icon: Icon, trend, trendType = 'up', color = 'violet', footerType }) {
@@ -40,7 +40,7 @@ function StatCard({ label, value, icon: Icon, trend, trendType = 'up', color = '
                     <Icon size={22} strokeWidth={2} />
                 </div>
             </div>
-            
+
             {/* Footer representation matching the reference */}
             <div className="mt-4 pt-3 border-t border-border/40 flex items-center">
                 {footerType === 'bar' && (
@@ -184,304 +184,345 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
     const activeIdx = hoveredIndex !== null ? hoveredIndex : (points.length > 0 ? points.length - 1 : null);
     const activePoint = activeIdx !== null ? points[activeIdx] : null;
 
-    const showRightPanel = (role === 'admin' && stokKritis?.length > 0) || (role === 'ketua_jurusan' && topBahan?.length > 0);
-
     return (
         <AppLayout title="Dashboard">
             <Head title="Dashboard" />
             <div className="p-5 space-y-6">
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                    {getStatsConfig().map((cfg, idx) => (
-                        <StatCard key={idx} {...cfg} />
-                    ))}
-                </div>
+                {/* Main Layout: Stats + Recent Transactions */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-                <div className={`grid gap-6 ${showRightPanel ? 'xl:grid-cols-3' : 'xl:grid-cols-1'}`}>
-                    {/* Chart Card */}
-                    <div className={`card p-5 ${showRightPanel ? 'xl:col-span-2' : ''}`}>
-                        <div className="flex items-center justify-between mb-6">
-                            <div>
-                                <h2 className="text-sm font-semibold text-text-primary">Tren Penggunaan BHP</h2>
-                                <p className="text-2xs text-text-secondary mt-0.5">Jumlah transaksi selesai dalam 6 bulan terakhir</p>
-                            </div>
-                            <div className="flex items-center gap-3 text-2xs font-semibold text-text-secondary select-none">
-                                <span className="flex items-center gap-1.5">
-                                    <span className="w-2 h-2 rounded bg-violet" />
-                                    Transaksi Selesai
-                                </span>
-                            </div>
+                    {/* Left Column: Stats Grid & Chart */}
+                    <div className="lg:col-span-2 space-y-5">
+
+                        {/* Stats Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {getStatsConfig().map((cfg, idx) => (
+                                <StatCard key={idx} {...cfg} />
+                            ))}
                         </div>
 
-                        <div className="relative w-full select-none">
-                            {labels.length > 0 ? (
-                                <div className="relative w-full">
-                                    <svg 
-                                        viewBox={`0 0 ${svgWidth} ${svgHeight}`} 
-                                        className="w-full h-auto overflow-visible"
-                                    >
-                                        <defs>
-                                            <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stopColor="#5E6AD2" stopOpacity="0.25" />
-                                                <stop offset="100%" stopColor="#5E6AD2" stopOpacity="0.00" />
-                                            </linearGradient>
-                                        </defs>
+                        {/* Chart Card */}
+                        <div className="card p-5">
+                            <div className="flex items-center justify-between mb-6">
+                                <div>
+                                    <h2 className="text-sm font-semibold text-text-primary">Tren Penggunaan BHP</h2>
+                                    <p className="text-2xs text-text-secondary mt-0.5">Jumlah transaksi selesai dalam 6 bulan terakhir</p>
+                                </div>
+                                <div className="flex items-center gap-3 text-2xs font-semibold text-text-secondary select-none">
+                                    <span className="flex items-center gap-1.5">
+                                        <span className="w-2 h-2 rounded bg-violet" />
+                                        Transaksi Selesai
+                                    </span>
+                                </div>
+                            </div>
 
-                                        {/* Horizontal grid lines & Y-Axis Labels */}
-                                        {yAxisTicks.map((tickVal, idx) => {
-                                            const tickY = paddingTop + (idx / steps) * height;
-                                            return (
-                                                <g key={idx}>
-                                                    <line 
-                                                        x1={paddingLeft} 
-                                                        y1={tickY} 
-                                                        x2={svgWidth - paddingRight} 
-                                                        y2={tickY} 
-                                                        className="stroke-border/30" 
-                                                        strokeWidth="1"
-                                                    />
-                                                    <text 
-                                                        x={paddingLeft - 10} 
-                                                        y={tickY + 3.5} 
-                                                        textAnchor="end" 
-                                                        className="text-[10px] font-semibold fill-text-secondary select-none"
-                                                    >
-                                                        {tickVal}
-                                                    </text>
-                                                </g>
-                                            );
-                                        })}
-
-                                        {/* Gradient Area Fill */}
-                                        {areaPath && (
-                                            <path 
-                                                d={areaPath} 
-                                                fill="url(#chart-gradient)" 
-                                            />
-                                        )}
-
-                                        {/* Smooth Path Stroke */}
-                                        {linePath && (
-                                            <path 
-                                                d={linePath} 
-                                                fill="none" 
-                                                stroke="#5E6AD2" 
-                                                strokeWidth="2.75" 
-                                                strokeLinecap="round" 
-                                                strokeLinejoin="round" 
-                                            />
-                                        )}
-
-                                        {/* X-Axis Labels */}
-                                        {points.map((pt, i) => (
-                                            <text 
-                                                key={i} 
-                                                x={pt.x} 
-                                                y={svgHeight - 4} 
-                                                textAnchor="middle" 
-                                                className="text-[10px] font-semibold fill-text-secondary select-none"
-                                            >
-                                                {pt.label}
-                                            </text>
-                                        ))}
-
-                                        {/* Active Point Indicator Vertical Line */}
-                                        {activePoint && (
-                                            <line
-                                                x1={activePoint.x}
-                                                y1={paddingTop}
-                                                x2={activePoint.x}
-                                                y2={paddingTop + height}
-                                                className="stroke-violet/20"
-                                                strokeWidth="1.5"
-                                                strokeDasharray="4 4"
-                                            />
-                                        )}
-
-                                        {/* Active Point Circle Indicator */}
-                                        {activePoint && (
-                                            <circle
-                                                cx={activePoint.x}
-                                                cy={activePoint.y}
-                                                r="5.5"
-                                                fill="#FFFFFF"
-                                                stroke="#5E6AD2"
-                                                strokeWidth="3.5"
-                                                className="drop-shadow-sm"
-                                            />
-                                        )}
-
-                                        {/* Transparent Hover Trigger Rectangles */}
-                                        {points.map((pt, i) => {
-                                            const triggerWidth = i === 0 || i === points.length - 1 ? colWidth / 2 : colWidth;
-                                            const triggerX = i === 0 ? pt.x : pt.x - colWidth / 2;
-                                            return (
-                                                <rect
-                                                    key={i}
-                                                    x={triggerX}
-                                                    y={paddingTop}
-                                                    width={triggerWidth}
-                                                    height={height}
-                                                    fill="transparent"
-                                                    className="cursor-pointer"
-                                                    onMouseEnter={() => setHoveredIndex(i)}
-                                                    onMouseLeave={() => setHoveredIndex(null)}
-                                                />
-                                            );
-                                        })}
-                                    </svg>
-
-                                    {/* Tooltip HTML Overlay positioned responsively with percentages */}
-                                    {activePoint && (
-                                        <div 
-                                            className="absolute pointer-events-none transition-all duration-150 ease-out z-20"
-                                            style={{
-                                                left: `${(activePoint.x / svgWidth) * 100}%`,
-                                                top: `${(activePoint.y / svgHeight) * 100}%`,
-                                                transform: 'translate(-50%, -120%)'
-                                            }}
+                            <div className="relative w-full select-none">
+                                {labels.length > 0 ? (
+                                    <div className="relative w-full">
+                                        <svg
+                                            viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+                                            className="w-full h-auto overflow-visible"
                                         >
-                                            <div className="bg-text-primary text-white px-2.5 py-1 rounded-md shadow-lg border border-white/10 text-center flex flex-col gap-0.5 min-w-[75px]">
-                                                <span className="text-[9px] text-white/60 font-semibold">{activePoint.label}</span>
-                                                <span className="text-2xs font-bold text-white font-mono leading-none py-0.5">
-                                                    {activePoint.val} <span className="text-[9px] font-normal text-white/70">Tx</span>
-                                                </span>
+                                            <defs>
+                                                <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="0%" stopColor="#5E6AD2" stopOpacity="0.25" />
+                                                    <stop offset="100%" stopColor="#5E6AD2" stopOpacity="0.00" />
+                                                </linearGradient>
+                                            </defs>
+
+                                            {/* Horizontal grid lines & Y-Axis Labels */}
+                                            {yAxisTicks.map((tickVal, idx) => {
+                                                const tickY = paddingTop + (idx / steps) * height;
+                                                return (
+                                                    <g key={idx}>
+                                                        <line
+                                                            x1={paddingLeft}
+                                                            y1={tickY}
+                                                            x2={svgWidth - paddingRight}
+                                                            y2={tickY}
+                                                            className="stroke-border/30"
+                                                            strokeWidth="1"
+                                                        />
+                                                        <text
+                                                            x={paddingLeft - 10}
+                                                            y={tickY + 3.5}
+                                                            textAnchor="end"
+                                                            className="text-[10px] font-semibold fill-text-secondary select-none"
+                                                        >
+                                                            {tickVal}
+                                                        </text>
+                                                    </g>
+                                                );
+                                            })}
+
+                                            {/* Gradient Area Fill */}
+                                            {areaPath && (
+                                                <path
+                                                    d={areaPath}
+                                                    fill="url(#chart-gradient)"
+                                                />
+                                            )}
+
+                                            {/* Smooth Path Stroke */}
+                                            {linePath && (
+                                                <path
+                                                    d={linePath}
+                                                    fill="none"
+                                                    stroke="#5E6AD2"
+                                                    strokeWidth="2.75"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                />
+                                            )}
+
+                                            {/* X-Axis Labels */}
+                                            {points.map((pt, i) => (
+                                                <text
+                                                    key={i}
+                                                    x={pt.x}
+                                                    y={svgHeight - 4}
+                                                    textAnchor="middle"
+                                                    className="text-[10px] font-semibold fill-text-secondary select-none"
+                                                >
+                                                    {pt.label}
+                                                </text>
+                                            ))}
+
+                                            {/* Active Point Indicator Vertical Line */}
+                                            {activePoint && (
+                                                <line
+                                                    x1={activePoint.x}
+                                                    y1={paddingTop}
+                                                    x2={activePoint.x}
+                                                    y2={paddingTop + height}
+                                                    className="stroke-violet/20"
+                                                    strokeWidth="1.5"
+                                                    strokeDasharray="4 4"
+                                                />
+                                            )}
+
+                                            {/* Active Point Circle Indicator */}
+                                            {activePoint && (
+                                                <circle
+                                                    cx={activePoint.x}
+                                                    cy={activePoint.y}
+                                                    r="5.5"
+                                                    fill="#FFFFFF"
+                                                    stroke="#5E6AD2"
+                                                    strokeWidth="3.5"
+                                                    className="drop-shadow-sm"
+                                                />
+                                            )}
+
+                                            {/* Transparent Hover Trigger Rectangles */}
+                                            {points.map((pt, i) => {
+                                                const triggerWidth = i === 0 || i === points.length - 1 ? colWidth / 2 : colWidth;
+                                                const triggerX = i === 0 ? pt.x : pt.x - colWidth / 2;
+                                                return (
+                                                    <rect
+                                                        key={i}
+                                                        x={triggerX}
+                                                        y={paddingTop}
+                                                        width={triggerWidth}
+                                                        height={height}
+                                                        fill="transparent"
+                                                        className="cursor-pointer"
+                                                        onMouseEnter={() => setHoveredIndex(i)}
+                                                        onMouseLeave={() => setHoveredIndex(null)}
+                                                    />
+                                                );
+                                            })}
+                                        </svg>
+
+                                        {/* Tooltip HTML Overlay positioned responsively with percentages */}
+                                        {activePoint && (
+                                            <div
+                                                className="absolute pointer-events-none transition-all duration-150 ease-out z-20"
+                                                style={{
+                                                    left: `${(activePoint.x / svgWidth) * 100}%`,
+                                                    top: `${(activePoint.y / svgHeight) * 100}%`,
+                                                    transform: 'translate(-50%, -120%)'
+                                                }}
+                                            >
+                                                <div className="bg-text-primary text-white px-2.5 py-1 rounded-md shadow-lg border border-white/10 text-center flex flex-col gap-0.5 min-w-[75px]">
+                                                    <span className="text-[9px] text-white/60 font-semibold">{activePoint.label}</span>
+                                                    <span className="text-2xs font-bold text-white font-mono leading-none py-0.5">
+                                                        {activePoint.val} <span className="text-[9px] font-normal text-white/70">Tx</span>
+                                                    </span>
+                                                </div>
+                                                {/* Tooltip arrow/caret */}
+                                                <div className="w-2.5 h-2.5 bg-text-primary rotate-45 mx-auto -mt-1.5 border-r border-b border-white/10" />
                                             </div>
-                                            {/* Tooltip arrow/caret */}
-                                            <div className="w-2.5 h-2.5 bg-text-primary rotate-45 mx-auto -mt-1.5 border-r border-b border-white/10" />
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="w-full h-36 flex items-center justify-center">
+                                        <p className="text-xs text-text-secondary">Tidak ada data untuk ditampilkan</p>
+                                    </div>
+                                )}
+
+                                {/* Centered Empty State Overlay if count is 0 */}
+                                {!hasData && labels.length > 0 && (
+                                    <div className="absolute inset-0 bg-white/70 backdrop-blur-[0.5px] flex flex-col items-center justify-center text-center z-15 select-none rounded-md">
+                                        <div className="p-3 bg-violet/10 rounded-full text-violet mb-2">
+                                            <BarChart3 size={20} />
+                                        </div>
+                                        <p className="text-xs font-semibold text-text-primary">Belum Ada Riwayat Transaksi</p>
+                                        <p className="text-2xs text-text-secondary mt-0.5">Sistem belum mencatat transaksi selesai dalam 6 bulan terakhir</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Column: Recent Transactions & Alerts */}
+                    <div className="lg:col-span-1 space-y-5">
+
+                        {/* Recent Transactions (Admin) */}
+                        {role === 'admin' && (
+                            <div className="card">
+                                <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                                    <h2 className="text-sm font-semibold text-text-primary flex items-center gap-2">
+                                        <Clock size={14} className="text-violet" />
+                                        Transaksi Terbaru
+                                    </h2>
+                                    <Link href="/admin/pengajuan" className="text-xs text-violet hover:text-violet-hover transition-colors font-medium">
+                                        Semua
+                                    </Link>
+                                </div>
+                                <div className="divide-y divide-border/50">
+                                    {recentPengajuan && recentPengajuan.length > 0 ? (
+                                        recentPengajuan.slice(0, 5).map(p => (
+                                            <Link
+                                                key={p.id}
+                                                href={`/admin/pengajuan/${p.id}`}
+                                                className="block px-4 py-3 hover:bg-dark-surface/30 transition-colors"
+                                            >
+                                                <div className="flex items-start justify-between gap-3">
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-xs font-mono text-violet mb-0.5">{p.kode_pengajuan}</p>
+                                                        <p className="text-sm text-text-primary font-medium truncate">{p.user?.name}</p>
+                                                        <p className="text-xs text-text-secondary truncate mt-0.5">{p.mata_kuliah || 'Mandiri'}</p>
+                                                    </div>
+                                                    <StatusChip status={p.status} />
+                                                </div>
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <div className="px-4 py-6 text-center text-xs text-text-secondary">
+                                            Belum ada pengajuan transaksi.
                                         </div>
                                     )}
                                 </div>
-                            ) : (
-                                <div className="w-full h-36 flex items-center justify-center">
-                                    <p className="text-xs text-text-secondary">Tidak ada data untuk ditampilkan</p>
+                            </div>
+                        )}
+
+                        {/* Stok Kritis (Admin) */}
+                        {role === 'admin' && (
+                            <div className="card">
+                                <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                                    <h2 className="text-sm font-semibold text-text-primary flex items-center gap-1.5">
+                                        <AlertTriangle size={14} className="text-error animate-pulse" /> Stok Kritis
+                                    </h2>
+                                    <Link href="/admin/bahan" className="text-xs text-violet hover:text-violet-hover transition-colors font-medium">
+                                        Semua
+                                    </Link>
                                 </div>
-                            )}
-
-                            {/* Centered Empty State Overlay if count is 0 */}
-                            {!hasData && labels.length > 0 && (
-                                <div className="absolute inset-0 bg-white/70 backdrop-blur-[0.5px] flex flex-col items-center justify-center text-center z-15 select-none rounded-md">
-                                    <div className="p-3 bg-violet/10 rounded-full text-violet mb-2">
-                                        <BarChart3 size={20} />
-                                    </div>
-                                    <p className="text-xs font-semibold text-text-primary">Belum Ada Riwayat Transaksi</p>
-                                    <p className="text-2xs text-text-secondary mt-0.5">Sistem belum mencatat transaksi selesai dalam 6 bulan terakhir</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Stok Kritis (Admin) */}
-                    {role === 'admin' && stokKritis?.length > 0 && (
-                        <div className="card h-fit">
-                            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-                                <h2 className="text-sm font-semibold text-text-primary flex items-center gap-1.5">
-                                    <AlertTriangle size={14} className="text-error animate-pulse" /> Stok Kritis
-                                </h2>
-                                <Link href="/admin/bahan" className="text-xs text-text-secondary hover:text-violet transition-colors">
-                                    Lihat semua
-                                </Link>
-                            </div>
-                            <div className="divide-y divide-border">
-                                {stokKritis.map(b => (
-                                    <div key={b.id} className="flex items-center justify-between px-4 py-2.5">
-                                        <div>
-                                            <p className="text-sm text-text-primary font-medium">{b.nama_bahan}</p>
-                                            <p className="text-xs text-text-secondary">Min: {b.minimal_stok} {b.satuan?.nama}</p>
-                                        </div>
-                                        <span className="text-error font-semibold text-sm">{b.stok} <span className="text-2xs font-normal text-error/60">{b.satuan?.nama}</span></span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Top Bahan (Ketua Jurusan) */}
-                    {role === 'ketua_jurusan' && topBahan?.length > 0 && (
-                        <div className="card h-fit">
-                            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-                                <h2 className="text-sm font-semibold text-text-primary">Bahan Terpopuler (6 Bulan)</h2>
-                                <span className="text-3xs text-text-secondary uppercase tracking-widest font-mono select-none">Berdasarkan Jumlah</span>
-                            </div>
-                            <div className="divide-y divide-border">
-                                {topBahan.map((tb, idx) => (
-                                    <div key={tb.bahan_id} className="flex items-center justify-between px-4 py-2.5">
-                                        <div className="flex items-center gap-3">
-                                            <span className="w-5 h-5 rounded-full bg-violet/10 text-violet flex items-center justify-center text-xs font-bold select-none">
-                                                {idx + 1}
-                                            </span>
-                                            <div>
-                                                <p className="text-sm text-text-primary font-medium">{tb.bahan?.nama_bahan || 'Bahan Tidak Diketahui'}</p>
-                                                <p className="text-xs text-text-secondary">{tb.bahan?.kode_bahan}</p>
+                                <div className="divide-y divide-border/50">
+                                    {stokKritis && stokKritis.length > 0 ? (
+                                        stokKritis.slice(0, 5).map(b => (
+                                            <div key={b.id} className="flex items-center justify-between px-4 py-2.5 hover:bg-dark-surface/30 transition-colors">
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="text-sm text-text-primary font-medium truncate">{b.nama_bahan}</p>
+                                                    <p className="text-xs text-text-secondary">Min: {b.minimal_stok} {b.satuan?.nama}</p>
+                                                </div>
+                                                <span className="text-error font-semibold text-sm ml-3">{b.stok}</span>
                                             </div>
+                                        ))
+                                    ) : (
+                                        <div className="px-4 py-6 text-center text-xs text-text-secondary">
+                                            Semua stok bahan dalam kondisi aman.
                                         </div>
-                                        <span className="text-violet font-semibold text-sm">
-                                            {tb.total_pakai} <span className="text-2xs font-normal text-text-secondary">{tb.bahan?.satuan?.nama}</span>
-                                        </span>
-                                    </div>
-                                ))}
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+
+                        {/* Top Bahan (Ketua Jurusan) */}
+                        {role === 'ketua_jurusan' && (
+                            <div className="card">
+                                <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                                    <h2 className="text-sm font-semibold text-text-primary">Bahan Terpopuler</h2>
+                                    <span className="text-3xs text-text-secondary uppercase tracking-widest font-mono">6 Bulan</span>
+                                </div>
+                                <div className="divide-y divide-border/50">
+                                    {topBahan && topBahan.length > 0 ? (
+                                        topBahan.slice(0, 5).map((tb, idx) => (
+                                            <div key={tb.bahan_id} className="flex items-center justify-between px-4 py-2.5 hover:bg-dark-surface/30 transition-colors">
+                                                <div className="flex items-center gap-3 min-w-0 flex-1">
+                                                    <span className="w-6 h-6 rounded-full bg-violet/10 text-violet flex items-center justify-center text-xs font-bold flex-shrink-0">
+                                                        {idx + 1}
+                                                    </span>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-sm text-text-primary font-medium truncate">{tb.bahan?.nama_bahan || 'Bahan Tidak Diketahui'}</p>
+                                                        <p className="text-xs text-text-secondary truncate">{tb.bahan?.kode_bahan}</p>
+                                                    </div>
+                                                </div>
+                                                <span className="text-violet font-semibold text-sm ml-3">{tb.total_pakai}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="px-4 py-6 text-center text-xs text-text-secondary">
+                                            Belum ada data penggunaan bahan.
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Recent for Mahasiswa */}
+                        {role === 'mahasiswa' && (
+                            <div className="card">
+                                <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                                    <h2 className="text-sm font-semibold text-text-primary flex items-center gap-2">
+                                        <ClipboardList size={14} className="text-violet" />
+                                        Pengajuan Terbaru
+                                    </h2>
+                                    <Link href="/mahasiswa/pengajuan" className="text-xs text-violet hover:text-violet-hover transition-colors font-medium">
+                                        Semua
+                                    </Link>
+                                </div>
+                                <div className="divide-y divide-border/50">
+                                    {recentPengajuan && recentPengajuan.length > 0 ? (
+                                        recentPengajuan.slice(0, 5).map(p => (
+                                            <Link
+                                                key={p.id}
+                                                href={`/mahasiswa/pengajuan/${p.id}`}
+                                                className="block px-4 py-3 hover:bg-dark-surface/30 transition-colors"
+                                            >
+                                                <div className="flex items-start justify-between gap-3">
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-xs font-mono text-violet mb-0.5">{p.kode_pengajuan}</p>
+                                                        <p className="text-sm text-text-primary font-medium truncate">{p.mata_kuliah || 'Mandiri'}</p>
+                                                        <p className="text-xs text-text-secondary mt-0.5">{p.tanggal_pakai}</p>
+                                                    </div>
+                                                    <StatusChip status={p.status} />
+                                                </div>
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <div className="px-4 py-6 text-center text-xs text-text-secondary">
+                                            Anda belum pernah membuat pengajuan.
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                {/* Pengajuan Terbaru */}
-                {role === 'admin' && recentPengajuan?.length > 0 && (
-                    <div className="card">
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-                            <h2 className="text-sm font-semibold text-text-primary">Pengajuan Menunggu Review</h2>
-                            <Link href="/admin/pengajuan" className="text-xs text-text-secondary hover:text-violet transition-colors flex items-center gap-1">
-                                Lihat semua <ArrowRight size={11} />
-                            </Link>
-                        </div>
-                        <div className="divide-y divide-border">
-                            {recentPengajuan.map(p => (
-                                <div key={p.id} className="issue-row">
-                                    <span className="identifier">{p.kode_pengajuan}</span>
-                                    <span className="text-sm text-text-primary flex-1 truncate">{p.user?.name}</span>
-                                    <span className="text-xs text-text-secondary hidden sm:block">{p.mata_kuliah}</span>
-                                    <StatusChip status={p.status} />
-                                    <Link
-                                        href={`/admin/pengajuan/${p.id}`}
-                                        className="text-xs text-violet hover:text-violet-hover transition-colors ml-auto font-medium"
-                                    >
-                                        Review →
-                                    </Link>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {role === 'mahasiswa' && recentPengajuan?.length > 0 && (
-                    <div className="card">
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-                            <h2 className="text-sm font-semibold text-text-primary">Pengajuan Saya Terbaru</h2>
-                            <Link href="/mahasiswa/pengajuan" className="text-xs text-text-secondary hover:text-violet transition-colors flex items-center gap-1">
-                                Lihat semua <ArrowRight size={11} />
-                            </Link>
-                        </div>
-                        <div className="divide-y divide-border">
-                            {recentPengajuan.map(p => (
-                                <div key={p.id} className="issue-row">
-                                    <span className="identifier">{p.kode_pengajuan}</span>
-                                    <span className="text-sm text-text-primary flex-1 truncate">{p.mata_kuliah || 'Mandiri'}</span>
-                                    <span className="text-xs text-text-secondary hidden sm:block">{p.tanggal_pakai}</span>
-                                    <StatusChip status={p.status} />
-                                    <Link
-                                        href={`/mahasiswa/pengajuan`}
-                                        className="text-xs text-violet hover:text-violet-hover transition-colors ml-auto font-medium"
-                                    >
-                                        Detail →
-                                    </Link>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
             </div>
         </AppLayout>
     );
 }
-

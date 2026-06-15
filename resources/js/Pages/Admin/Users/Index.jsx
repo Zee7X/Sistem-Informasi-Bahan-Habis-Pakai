@@ -3,6 +3,8 @@ import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
 import { Plus, X, Pencil, Trash2, Search } from 'lucide-react';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 const roleMap = {
     admin: { label: 'Admin', cls: 'chip-violet' },
@@ -37,7 +39,37 @@ export default function Index({ users, filters }) {
         editForm.put(`/admin/users/${editData.id}`, { onSuccess: () => setEditData(null) });
     };
     const handleDelete = (u) => {
-        if (confirm(`Hapus user "${u.name}"?`)) router.delete(`/admin/users/${u.id}`);
+        Swal.fire({
+            title: 'Hapus User?',
+            html: `Apakah Anda yakin ingin menghapus user <strong>"${u.name}"</strong>?<br><small class="text-gray-500">Semua data pengajuan terkait user ini akan terpengaruh.</small>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            background: '#ffffff',
+            color: '#1f2937',
+            customClass: {
+                popup: 'rounded-xl shadow-2xl border border-gray-200'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(`/admin/users/${u.id}`, {
+                    onSuccess: () => {
+                        Swal.fire({
+                            title: 'Dihapus!',
+                            text: 'User telah berhasil dihapus.',
+                            icon: 'success',
+                            background: '#ffffff',
+                            color: '#1f2937',
+                            confirmButtonColor: '#7c3aed',
+                            timer: 2000
+                        });
+                    }
+                });
+            }
+        });
     };
     const handleSearch = (e) => {
         e.preventDefault();

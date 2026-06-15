@@ -47,14 +47,23 @@ export default function Index({ laporan, bulanList, tahun, bulan, filters }) {
                     </div>
 
                     <div className="flex gap-3 items-center self-end">
-                        {/* Export Button */}
-                        <a 
-                            href={`/admin/laporan/export?tahun=${tahun}&bulan=${bulan}`} 
-                            className="btn-secondary flex items-center gap-1.5 px-4 py-2 text-xs font-semibold"
-                        >
-                            <Download size={14} /> 
-                            Export Excel / CSV
-                        </a>
+                        {/* Export Buttons */}
+                        <div className="flex gap-2">
+                            <a
+                                href={`/admin/laporan/export?tahun=${tahun}&bulan=${bulan}&format=csv`}
+                                className="btn-secondary flex items-center gap-1.5 px-4 py-2 text-xs font-semibold"
+                            >
+                                <Download size={14} />
+                                CSV
+                            </a>
+                            <a
+                                href={`/admin/laporan/export?tahun=${tahun}&bulan=${bulan}&format=pdf`}
+                                className="btn-primary flex items-center gap-1.5 px-4 py-2 text-xs font-semibold"
+                            >
+                                <Download size={14} />
+                                PDF
+                            </a>
+                        </div>
                     </div>
                 </div>
 
