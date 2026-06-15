@@ -263,15 +263,7 @@ export default function AppLayout({ children, title }) {
                             {mobileOpen ? <X size={16} /> : <Menu size={16} />}
                         </button>
                         
-                        {/* Search Input bar mimicking reference */}
-                        <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 w-64 bg-dark-bg border border-border rounded-full text-xs text-text-secondary focus-within:border-violet focus-within:bg-white focus-within:shadow-violet-sm transition-all">
-                            <Search size={14} className="text-text-secondary flex-shrink-0" />
-                            <input 
-                                type="text" 
-                                placeholder="Cari bahan..." 
-                                className="bg-transparent border-0 p-0 outline-none text-text-primary placeholder:text-text-secondary/70 text-xs w-full"
-                            />
-                        </div>
+
                         
                         {/* Page Title on Mobile or Desktop */}
                         <h1 className="lg:hidden text-sm font-semibold text-text-primary truncate">{title}</h1>

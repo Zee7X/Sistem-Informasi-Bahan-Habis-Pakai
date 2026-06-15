@@ -71,7 +71,7 @@ export default function Index({ logs, bulanList, tahun, bulan, filters }) {
     return (
         <AppLayout title="Log Mutasi Stok">
             <Head title="Log Mutasi Stok" />
-            <div className="p-5 space-y-5">
+            <div className="p-5 space-y-5 max-w-7xl mx-auto">
                 
                 {/* Header Filter Panel */}
                 <div className="card p-4 flex flex-wrap gap-4 items-center justify-between">
@@ -119,7 +119,7 @@ export default function Index({ logs, bulanList, tahun, bulan, filters }) {
 
                 {/* Table card */}
                 <div className="card overflow-hidden">
-                    <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-dark-surface/30 justify-between">
+                    <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border bg-dark-surface/30 justify-between">
                         <div className="flex items-center gap-2">
                             <History size={16} className="text-violet" />
                             <h2 className="text-sm font-semibold text-text-primary">Kronologis Pergerakan Stok Laboratorium</h2>
@@ -133,22 +133,26 @@ export default function Index({ logs, bulanList, tahun, bulan, filters }) {
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-border bg-dark-surface/50">
-                                    <th className="section-header text-left py-3 px-4">Tanggal & Jam</th>
-                                    <th className="section-header text-left py-3 px-4">Item Bahan</th>
-                                    <th className="section-header text-center py-3 px-4">Tipe Mutasi</th>
-                                    <th className="section-header text-right py-3 px-4">Jumlah</th>
-                                    <th className="section-header text-center py-3 px-4">Perubahan Stok</th>
-                                    <th className="section-header text-left py-3 px-4">Keterangan / Referensi</th>
-                                    <th className="section-header text-left py-3 px-4">Pemohon / Penerima</th>
-                                    <th className="section-header text-left py-3 px-4">Operator</th>
+                                    <th className="section-header text-center py-3 px-5 w-12">No.</th>
+                                    <th className="section-header text-left py-3 px-5">Tanggal & Jam</th>
+                                    <th className="section-header text-left py-3 px-5">Item Bahan</th>
+                                    <th className="section-header text-center py-3 px-5">Tipe Mutasi</th>
+                                    <th className="section-header text-right py-3 px-5">Jumlah</th>
+                                    <th className="section-header text-center py-3 px-5">Perubahan Stok</th>
+                                    <th className="section-header text-left py-3 px-5">Keterangan / Referensi</th>
+                                    <th className="section-header text-left py-3 px-5">Pemohon / Penerima</th>
+                                    <th className="section-header text-left py-3 px-5">Operator</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border/40">
-                                {logs?.data?.length > 0 ? logs.data.map(log => {
+                                {logs?.data?.length > 0 ? logs.data.map((log, idx) => {
                                     const { isIncrease, isDecrease, sign } = getStokInfo(log);
                                     return (
-                                        <tr key={log.id} className="hover:bg-dark-surface/50 transition-colors">
-                                            <td className="px-4 py-3 whitespace-nowrap text-xs text-text-secondary font-mono">
+                                        <tr key={log.id} className="hover:bg-dark-surface/30 transition-colors">
+                                            <td className="px-5 py-3.5 text-center text-sm text-text-secondary">
+                                                {(logs.meta?.from ?? logs.from ?? 1) + idx}
+                                            </td>
+                                            <td className="px-5 py-3.5 whitespace-nowrap text-xs text-text-secondary font-mono">
                                                 <div className="flex items-center gap-1.5">
                                                     <Calendar size={12} className="text-violet" />
                                                     {new Date(log.tanggal).toLocaleString('id-ID', {
@@ -160,19 +164,19 @@ export default function Index({ logs, bulanList, tahun, bulan, filters }) {
                                                     })}
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3">
+                                            <td className="px-5 py-3.5">
                                                 <p className="text-sm font-semibold text-text-primary">
                                                     {log.bahan?.nama_bahan || 'Bahan Dihapus'}
                                                 </p>
                                                 <span className="identifier text-xs">{log.bahan?.kode_bahan || '-'}</span>
                                             </td>
-                                            <td className="px-4 py-3 text-center">
+                                            <td className="px-5 py-3.5 text-center">
                                                 {getJenisBadge(log.jenis)}
                                             </td>
-                                            <td className={`px-4 py-3 text-right font-bold text-sm font-mono ${isIncrease ? 'text-success' : isDecrease ? 'text-error' : 'text-text-primary'}`}>
+                                            <td className={`px-5 py-3.5 text-right font-bold text-sm font-mono ${isIncrease ? 'text-success' : isDecrease ? 'text-error' : 'text-text-primary'}`}>
                                                 {sign}{Math.abs(log.jumlah)} {log.bahan?.satuan?.nama || ''}
                                             </td>
-                                            <td className="px-4 py-3">
+                                            <td className="px-5 py-3.5">
                                                 <div className="flex items-center justify-center gap-1.5 text-xs font-mono">
                                                     <span className="text-text-secondary">{log.stok_sebelum}</span>
                                                     <ArrowRight size={12} className="text-text-secondary/40" />
@@ -181,10 +185,10 @@ export default function Index({ logs, bulanList, tahun, bulan, filters }) {
                                                     </span>
                                                 </div>
                                             </td>
-                                        <td className="px-4 py-3 text-sm text-text-primary max-w-xs truncate" title={log.keterangan}>
+                                        <td className="px-5 py-3.5 text-sm text-text-primary max-w-xs truncate" title={log.keterangan}>
                                             {log.keterangan || '-'}
                                         </td>
-                                        <td className="px-4 py-3 text-xs text-text-secondary whitespace-nowrap">
+                                        <td className="px-5 py-3.5 text-xs text-text-secondary whitespace-nowrap">
                                             {log.reference_table === 'pengajuan' && log.pengajuan ? (
                                                 <div className="flex flex-col">
                                                     <span className="font-semibold text-text-primary">
@@ -204,7 +208,7 @@ export default function Index({ logs, bulanList, tahun, bulan, filters }) {
                                                 <span className="text-text-secondary/60">-</span>
                                             )}
                                         </td>
-                                        <td className="px-4 py-3 text-xs text-text-secondary whitespace-nowrap">
+                                        <td className="px-5 py-3.5 text-xs text-text-secondary whitespace-nowrap">
                                             <div className="flex items-center gap-1">
                                                 <User size={12} className="text-violet/70" />
                                                 <span>
@@ -218,7 +222,7 @@ export default function Index({ logs, bulanList, tahun, bulan, filters }) {
                                     </tr>
                                     );
                                 }) : (
-                                    <tr><td colSpan={8} className="px-4 py-12 text-center text-sm text-text-secondary">Tidak ada data log mutasi stok untuk kriteria pencarian ini.</td></tr>
+                                    <tr><td colSpan={9} className="px-5 py-12 text-center text-sm text-text-secondary">Tidak ada data log mutasi stok untuk kriteria pencarian ini.</td></tr>
                                 )}
                             </tbody>
                         </table>

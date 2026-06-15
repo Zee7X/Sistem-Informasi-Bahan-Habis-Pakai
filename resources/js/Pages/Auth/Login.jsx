@@ -1,5 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
-import { FlaskConical, Eye, EyeOff } from 'lucide-react';
+import { FlaskConical, Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Login({ status }) {
@@ -19,65 +19,33 @@ export default function Login({ status }) {
     return (
         <>
             <Head title="Login" />
-            <div className="min-h-screen flex bg-dark-bg">
-                {/* Left Panel — ilustrasi / branding */}
-                <div className="hidden lg:flex flex-col items-center justify-center flex-1 bg-dark-card border-r border-border p-12 relative overflow-hidden">
-                    {/* Decorative violet glow */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-violet/5 rounded-full blur-3xl pointer-events-none" />
-                    <div className="absolute top-1/4 right-1/4 w-48 h-48 bg-violet/8 rounded-full blur-2xl pointer-events-none" />
+            <div className="min-h-screen flex items-center justify-center bg-dark-bg font-sans relative overflow-hidden px-4">
+                {/* Background decorative glows */}
+                <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-violet/5 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-violet/5 rounded-full blur-3xl pointer-events-none" />
 
-                    <div className="relative z-10 text-center max-w-sm">
-                        <div className="w-16 h-16 bg-violet/10 border border-violet/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                            <FlaskConical size={30} className="text-violet" />
-                        </div>
-                        <h1 className="text-2xl font-semibold text-text-primary tracking-tight mb-3">
-                            Sistem BHP Laboratorium
-                        </h1>
-                        <p className="text-sm text-text-secondary leading-relaxed">
-                            Platform manajemen bahan habis pakai laboratorium<br />
-                            Politeknik Negeri Cilacap
-                        </p>
+                <div className="w-full max-w-md relative z-10">
+                    {/* Main Card */}
+                    <div className="bg-white border border-border/80 rounded-2xl shadow-modal p-8 sm:p-10 relative overflow-hidden">
+                        {/* Subtle inner top glow accent */}
+                        <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-violet/20 via-violet to-violet/20" />
 
-                        {/* Feature list */}
-                        <div className="mt-10 text-left space-y-3">
-                            {[
-                                'Pengajuan BHP digital & terekam',
-                                'Monitoring stok real-time',
-                                'Laporan konsumsi per semester',
-                                'Approval multi-level terstruktur',
-                            ].map((f) => (
-                                <div key={f} className="flex items-center gap-2.5 text-sm text-text-secondary">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-violet flex-shrink-0" />
-                                    {f}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <p className="absolute bottom-6 text-2xs text-text-secondary/50">
-                        © {new Date().getFullYear()} TPPL — Politeknik Negeri Cilacap
-                    </p>
-                </div>
-
-                {/* Right Panel — form login */}
-                <div className="flex flex-col items-center justify-center w-full lg:w-[400px] px-8 lg:px-12">
-                    {/* Mobile logo */}
-                    <div className="lg:hidden flex items-center gap-2.5 mb-10">
-                        <div className="w-8 h-8 bg-violet/10 border border-violet/20 rounded-lg flex items-center justify-center">
-                            <FlaskConical size={16} className="text-violet" />
-                        </div>
-                        <span className="text-sm font-semibold text-text-primary">BHP Laboratorium</span>
-                    </div>
-
-                    <div className="w-full max-w-sm">
-                        <div className="mb-8">
-                            <h2 className="text-xl font-semibold text-text-primary mb-1">Masuk ke akun</h2>
-                            <p className="text-sm text-text-secondary">Masukkan email dan password Anda</p>
+                        {/* Logo & Header */}
+                        <div className="flex flex-col items-center text-center mb-8">
+                            <div className="w-12 h-12 rounded-2xl bg-violet/10 border border-violet/20 flex items-center justify-center shadow-sm mb-4">
+                                <FlaskConical size={24} className="text-violet animate-pulse" />
+                            </div>
+                            <h1 className="text-xl font-bold text-text-primary tracking-tight">
+                                Sistem BHP Laboratorium
+                            </h1>
+                            <p className="text-xs text-text-secondary mt-1">
+                                Politeknik Negeri Cilacap
+                            </p>
                         </div>
 
-                        {/* Status message */}
                         {status && (
-                            <div className="mb-4 text-sm text-success bg-success/10 border border-success/20 rounded px-3 py-2">
+                            <div className="mb-6 text-xs text-emerald-600 bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                 {status}
                             </div>
                         )}
@@ -85,38 +53,46 @@ export default function Login({ status }) {
                         <form onSubmit={submit} className="space-y-4">
                             {/* Email */}
                             <div>
-                                <label className="block text-xs font-medium text-text-secondary mb-1.5">
-                                    Email
+                                <label className="block text-xs font-semibold text-text-secondary mb-1.5">
+                                    Alamat Email
                                 </label>
-                                <input
-                                    id="email"
-                                    type="email"
-                                    value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
-                                    autoFocus
-                                    autoComplete="email"
-                                    placeholder="email@bhp.com"
-                                    className={`input ${errors.email ? 'border-error focus:border-error' : ''}`}
-                                />
+                                <div className="relative">
+                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary/60">
+                                        <Mail size={15} />
+                                    </div>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        value={data.email}
+                                        onChange={(e) => setData('email', e.target.value)}
+                                        autoFocus
+                                        autoComplete="email"
+                                        placeholder="nama@domain.com"
+                                        className={`input pl-9 h-10 ${errors.email ? 'border-error focus:border-error' : ''}`}
+                                    />
+                                </div>
                                 {errors.email && (
-                                    <p className="mt-1.5 text-xs text-error">{errors.email}</p>
+                                    <p className="mt-1.5 text-[11px] text-error font-medium">{errors.email}</p>
                                 )}
                             </div>
 
                             {/* Password */}
                             <div>
                                 <div className="flex items-center justify-between mb-1.5">
-                                    <label className="text-xs font-medium text-text-secondary">
-                                        Password
+                                    <label className="text-xs font-semibold text-text-secondary">
+                                        Kata Sandi
                                     </label>
                                     <a
                                         href="/forgot-password"
-                                        className="text-xs text-text-secondary hover:text-violet transition-colors"
+                                        className="text-xs text-violet hover:text-violet-hover font-medium transition-colors"
                                     >
                                         Lupa password?
                                     </a>
                                 </div>
                                 <div className="relative">
+                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary/60">
+                                        <Lock size={15} />
+                                    </div>
                                     <input
                                         id="password"
                                         type={showPassword ? 'text' : 'password'}
@@ -124,52 +100,64 @@ export default function Login({ status }) {
                                         onChange={(e) => setData('password', e.target.value)}
                                         autoComplete="current-password"
                                         placeholder="••••••••"
-                                        className={`input pr-9 ${errors.password ? 'border-error focus:border-error' : ''}`}
+                                        className={`input pl-9 pr-10 h-10 ${errors.password ? 'border-error focus:border-error' : ''}`}
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(s => !s)}
-                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
                                     >
-                                        {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                                        {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                                     </button>
                                 </div>
                                 {errors.password && (
-                                    <p className="mt-1.5 text-xs text-error">{errors.password}</p>
+                                    <p className="mt-1.5 text-[11px] text-error font-medium">{errors.password}</p>
                                 )}
                             </div>
 
-                            {/* Remember me */}
-                            <label className="flex items-center gap-2 cursor-pointer group">
-                                <input
-                                    type="checkbox"
-                                    checked={data.remember}
-                                    onChange={(e) => setData('remember', e.target.checked)}
-                                    className="w-3.5 h-3.5 rounded-sm border-border bg-dark-card checked:bg-violet checked:border-violet accent-violet"
-                                />
-                                <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors">
-                                    Ingat saya
-                                </span>
-                            </label>
+                            {/* Remember me & Options */}
+                            <div className="flex items-center justify-between pt-1">
+                                <label className="flex items-center gap-2 cursor-pointer group">
+                                    <input
+                                        type="checkbox"
+                                        checked={data.remember}
+                                        onChange={(e) => setData('remember', e.target.checked)}
+                                        className="w-4 h-4 rounded border-border bg-dark-card checked:bg-violet checked:border-violet accent-violet cursor-pointer"
+                                    />
+                                    <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors">
+                                        Ingat saya
+                                    </span>
+                                </label>
+                            </div>
 
                             {/* Submit */}
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="btn-primary w-full justify-center h-9 mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="btn-primary w-full justify-center h-10 mt-3 rounded-lg text-sm font-semibold shadow-lg shadow-violet/10 hover:shadow-violet/20 disabled:opacity-60 disabled:cursor-not-allowed transition-all"
                             >
                                 {processing ? (
-                                    <>
-                                        <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+                                    <div className="flex items-center gap-2">
+                                        <svg className="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                                         </svg>
-                                        Memproses...
-                                    </>
-                                ) : 'Masuk'}
+                                        <span>Memproses...</span>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-1.5">
+                                        <span>Masuk ke Akun</span>
+                                        <ArrowRight size={15} />
+                                    </div>
+                                )}
                             </button>
                         </form>
                     </div>
+
+                    {/* Footer copyright outside card */}
+                    <p className="text-center text-[10px] text-text-secondary/60 mt-6">
+                        © {new Date().getFullYear()} TPPL — Politeknik Negeri Cilacap. All rights reserved.
+                    </p>
                 </div>
             </div>
         </>

@@ -1,7 +1,7 @@
 import { Head, useForm, router, usePage, Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
-import { Plus, X, Pencil, Trash2, FlaskConical, AlertTriangle, Check } from 'lucide-react';
+import { Plus, X, Pencil, Trash2, FlaskConical, AlertTriangle, Check, Search } from 'lucide-react';
 
 function StatCard({ label, value, icon: Icon, color = 'violet' }) {
     const colors = {
@@ -36,6 +36,7 @@ export default function Index({ bahan, satuan, filters, stats }) {
     const [showCreate, setShowCreate] = useState(false);
     const [editData, setEditData] = useState(null);
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const [search, setSearch] = useState(filters?.search ?? '');
 
     const createForm = useForm({
         kode_bahan: '', nama_bahan: '', spesifikasi: '', stok: '', satuan_id: '',
@@ -67,6 +68,11 @@ export default function Index({ bahan, satuan, filters, stats }) {
 
     const handleDelete = () => {
         router.delete(`/admin/bahan/${deleteTarget.id}`, { onSuccess: () => setDeleteTarget(null) });
+    };
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        router.get('/admin/bahan', { search }, { preserveState: true, replace: true });
     };
 
     const BahanForm = ({ form, onSubmit, onCancel }) => (
@@ -117,7 +123,7 @@ export default function Index({ bahan, satuan, filters, stats }) {
     return (
         <AppLayout title="Master Bahan">
             <Head title="Master Bahan" />
-            <div className="p-5 space-y-4">
+            <div className="p-5 space-y-5 max-w-7xl mx-auto">
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <StatCard label="Total Bahan" value={stats?.total} icon={FlaskConical} color="violet" />
@@ -125,44 +131,63 @@ export default function Index({ bahan, satuan, filters, stats }) {
                     <StatCard label="Perlu Restock" value={stats?.perlu_restock} icon={AlertTriangle} color="error" />
                 </div>
 
-                {role === 'admin' && (
-                    <div className="flex justify-end">
-                        <button onClick={() => setShowCreate(true)} className="btn-primary">
-                            <Plus size={14} /> Tambah Bahan
+                {/* Search & Action Header */}
+                <div className="card p-4 flex flex-wrap gap-4 items-center justify-between">
+                    <form onSubmit={handleSearch} className="relative flex-1 min-w-[280px] max-w-sm">
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />
+                        <input
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            placeholder="Cari nama atau kode bahan..."
+                            className="input pl-10 py-2 w-full text-sm"
+                        />
+                    </form>
+                    {role === 'admin' && (
+                        <button onClick={() => setShowCreate(true)} className="btn-primary inline-flex items-center gap-1.5 py-2 px-4">
+                            <Plus size={16} /> Tambah Bahan
                         </button>
-                    </div>
-                )}
+                    )}
+                </div>
 
                 <div className="card overflow-hidden">
+                    <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border bg-dark-surface/30">
+                        <FlaskConical size={16} className="text-violet" />
+                        <h2 className="text-sm font-semibold text-text-primary">Daftar Master Bahan</h2>
+                    </div>
+
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="border-b border-border">
-                                    <th className="section-header text-left py-2.5">Kode</th>
-                                    <th className="section-header text-left py-2.5">Nama Bahan</th>
-                                    <th className="section-header text-left py-2.5 hidden md:table-cell">Satuan</th>
-                                    <th className="section-header text-right py-2.5">Stok</th>
-                                    <th className="section-header text-right py-2.5 hidden lg:table-cell">Min. Stok</th>
-                                    {role === 'admin' && <th className="section-header text-right py-2.5">Aksi</th>}
+                                <tr className="border-b border-border bg-dark-surface/50">
+                                    <th className="section-header text-center py-3 px-5 w-12">No.</th>
+                                    <th className="section-header text-left py-3 px-5">Kode</th>
+                                    <th className="section-header text-left py-3 px-5">Nama Bahan</th>
+                                    <th className="section-header text-left py-3 px-5 hidden md:table-cell">Satuan</th>
+                                    <th className="section-header text-right py-3 px-5">Stok</th>
+                                    <th className="section-header text-right py-3 px-5 hidden lg:table-cell">Min. Stok</th>
+                                    {role === 'admin' && <th className="section-header text-right py-3 px-5">Aksi</th>}
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border/40">
-                                {bahan?.data?.map(b => (
-                                    <tr key={b.id} className="hover:bg-dark-surface/50 transition-colors">
-                                        <td className="px-4 py-2.5"><span className="identifier">{b.kode_bahan}</span></td>
-                                        <td className="px-4 py-2.5">
+                                {bahan?.data?.map((b, idx) => (
+                                    <tr key={b.id} className="hover:bg-dark-surface/30 transition-colors">
+                                        <td className="px-5 py-3.5 text-center text-sm text-text-secondary">
+                                            {(bahan.meta?.from ?? bahan.from ?? 1) + idx}
+                                        </td>
+                                        <td className="px-5 py-3.5"><span className="identifier">{b.kode_bahan}</span></td>
+                                        <td className="px-5 py-3.5">
                                             <p className="text-sm text-text-primary">{b.nama_bahan}</p>
                                             {b.spesifikasi && <p className="text-xs text-text-secondary">{b.spesifikasi}</p>}
                                         </td>
-                                        <td className="px-4 py-2.5 text-sm text-text-secondary hidden md:table-cell">{b.satuan?.nama}</td>
-                                        <td className="px-4 py-2.5 text-right">
+                                        <td className="px-5 py-3.5 text-sm text-text-secondary hidden md:table-cell">{b.satuan?.nama}</td>
+                                        <td className="px-5 py-3.5 text-right">
                                             <span className={`text-sm font-semibold ${b.stok <= b.minimal_stok ? 'text-error' : 'text-success'}`}>
                                                 {b.stok}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-2.5 text-right text-sm text-text-secondary hidden lg:table-cell">{b.minimal_stok}</td>
+                                        <td className="px-5 py-3.5 text-right text-sm text-text-secondary hidden lg:table-cell">{b.minimal_stok}</td>
                                         {role === 'admin' && (
-                                            <td className="px-4 py-2.5 text-right">
+                                            <td className="px-5 py-3.5 text-right">
                                                 <div className="flex gap-1 justify-end">
                                                     <button onClick={() => openEdit(b)} className="btn-ghost btn-sm px-1.5"><Pencil size={13} /></button>
                                                     <button onClick={() => setDeleteTarget(b)} className="btn-danger btn-sm px-1.5"><Trash2 size={13} /></button>
@@ -172,7 +197,7 @@ export default function Index({ bahan, satuan, filters, stats }) {
                                     </tr>
                                 ))}
                                 {!bahan?.data?.length && (
-                                    <tr><td colSpan={role === 'admin' ? 6 : 5} className="px-4 py-12 text-center text-sm text-text-secondary">Belum ada data bahan.</td></tr>
+                                    <tr><td colSpan={role === 'admin' ? 7 : 6} className="px-5 py-12 text-center text-sm text-text-secondary">Belum ada data bahan.</td></tr>
                                 )}
                             </tbody>
                         </table>

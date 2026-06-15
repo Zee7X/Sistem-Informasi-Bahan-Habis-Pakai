@@ -1,7 +1,7 @@
 import { Head, useForm, router, Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
-import { Plus, X, Pencil, Trash2, Search } from 'lucide-react';
+import { Plus, X, Pencil, Trash2, Search, Tag } from 'lucide-react';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -119,37 +119,46 @@ export default function Index({ satuan, filters }) {
     return (
         <AppLayout title="Satuan">
             <Head title="Satuan" />
-            <div className="p-5 space-y-4">
-                <div className="flex gap-2 items-center">
-                    <form onSubmit={handleSearch} className="relative flex-1 max-w-72">
-                        <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-secondary" />
+            <div className="p-5 space-y-5 max-w-7xl mx-auto">
+                {/* Search & Action Header */}
+                <div className="card p-4 flex flex-wrap gap-4 items-center justify-between">
+                    <form onSubmit={handleSearch} className="relative flex-1 min-w-[280px] max-w-sm">
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />
                         <input
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             placeholder="Cari nama satuan..."
-                            className="input pl-8"
+                            className="input pl-10 py-2 w-full text-sm"
                         />
                     </form>
-                    <div className="flex-1" />
-                    <button onClick={() => setShowCreate(true)} className="btn-primary">
-                        <Plus size={14} /> Tambah Satuan
+                    <button onClick={() => setShowCreate(true)} className="btn-primary inline-flex items-center gap-1.5 py-2 px-4">
+                        <Plus size={16} /> Tambah Satuan
                     </button>
                 </div>
                 <div className="card overflow-hidden">
+                    <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border bg-dark-surface/30">
+                        <Tag size={16} className="text-violet" />
+                        <h2 className="text-sm font-semibold text-text-primary">Daftar Satuan Barang</h2>
+                    </div>
+
                     <table className="w-full">
                         <thead>
-                            <tr className="border-b border-border">
-                                <th className="section-header text-left py-2.5">Nama Satuan</th>
-                                <th className="section-header text-left py-2.5 hidden md:table-cell">Keterangan</th>
-                                <th className="section-header text-right py-2.5">Aksi</th>
+                            <tr className="border-b border-border bg-dark-surface/50">
+                                <th className="section-header text-center py-3 px-5 w-12">No.</th>
+                                <th className="section-header text-left py-3 px-5">Nama Satuan</th>
+                                <th className="section-header text-left py-3 px-5 hidden md:table-cell">Keterangan</th>
+                                <th className="section-header text-right py-3 px-5">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border/40">
-                            {satuan?.data?.map(s => (
-                                <tr key={s.id} className="hover:bg-dark-surface/50 transition-colors">
-                                    <td className="px-4 py-2.5 text-sm font-medium text-text-primary">{s.nama}</td>
-                                    <td className="px-4 py-2.5 text-sm text-text-secondary hidden md:table-cell">{s.keterangan ?? '-'}</td>
-                                    <td className="px-4 py-2.5 text-right">
+                            {satuan?.data?.map((s, idx) => (
+                                <tr key={s.id} className="hover:bg-dark-surface/30 transition-colors">
+                                    <td className="px-5 py-3.5 text-center text-sm text-text-secondary">
+                                        {(satuan.meta?.from ?? satuan.from ?? 1) + idx}
+                                    </td>
+                                    <td className="px-5 py-3.5 text-sm font-medium text-text-primary">{s.nama}</td>
+                                    <td className="px-5 py-3.5 text-sm text-text-secondary hidden md:table-cell">{s.keterangan ?? '-'}</td>
+                                    <td className="px-5 py-3.5 text-right">
                                         <div className="flex gap-1 justify-end">
                                             <button onClick={() => openEdit(s)} className="btn-ghost btn-sm px-1.5"><Pencil size={13} /></button>
                                             <button onClick={() => handleDelete(s)} className="btn-danger btn-sm px-1.5"><Trash2 size={13} /></button>
@@ -158,7 +167,7 @@ export default function Index({ satuan, filters }) {
                                 </tr>
                             ))}
                             {!satuan?.data?.length && (
-                                <tr><td colSpan={3} className="px-4 py-12 text-center text-sm text-text-secondary">
+                                <tr><td colSpan={4} className="px-5 py-12 text-center text-sm text-text-secondary">
                                     {filters?.search ? `Tidak ada hasil untuk "${filters.search}".` : 'Belum ada satuan.'}
                                 </td></tr>
                             )}

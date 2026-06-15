@@ -1,7 +1,7 @@
 import { Head, useForm, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
-import { Plus, X, Pencil, Trash2, Search } from 'lucide-react';
+import { Plus, X, Pencil, Trash2, Search, User } from 'lucide-react';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -129,40 +129,56 @@ export default function Index({ users, filters }) {
     return (
         <AppLayout title="Kelola Users">
             <Head title="Kelola Users" />
-            <div className="p-5 space-y-4">
-                <div className="flex gap-2 items-center">
-                    <form onSubmit={handleSearch} className="relative flex-1 max-w-72">
-                        <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-secondary" />
-                        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Cari nama, email, NIM..." className="input pl-8" />
+            <div className="p-5 space-y-5 max-w-7xl mx-auto">
+                {/* Search & Action Header */}
+                <div className="card p-4 flex flex-wrap gap-4 items-center justify-between">
+                    <form onSubmit={handleSearch} className="relative flex-1 min-w-[280px] max-w-sm">
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />
+                        <input
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            placeholder="Cari nama, email, NIM..."
+                            className="input pl-10 py-2 w-full text-sm"
+                        />
                     </form>
-                    <div className="flex-1" />
-                    <button onClick={() => setShowCreate(true)} className="btn-primary"><Plus size={14} /> Tambah User</button>
+                    <button onClick={() => setShowCreate(true)} className="btn-primary inline-flex items-center gap-1.5 py-2 px-4">
+                        <Plus size={16} /> Tambah User
+                    </button>
                 </div>
                 <div className="card overflow-hidden">
+                    <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border bg-dark-surface/30">
+                        <User size={16} className="text-violet" />
+                        <h2 className="text-sm font-semibold text-text-primary">Daftar Pengguna / Users</h2>
+                    </div>
+
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="border-b border-border">
-                                    <th className="section-header text-left py-2.5">Nama</th>
-                                    <th className="section-header text-left py-2.5 hidden md:table-cell">Email</th>
-                                    <th className="section-header text-left py-2.5 hidden lg:table-cell">NIM / Kelas</th>
-                                    <th className="section-header text-left py-2.5">Role</th>
-                                    <th className="section-header text-right py-2.5">Aksi</th>
+                                <tr className="border-b border-border bg-dark-surface/50">
+                                    <th className="section-header text-center py-3 px-5 w-12">No.</th>
+                                    <th className="section-header text-left py-3 px-5">Nama</th>
+                                    <th className="section-header text-left py-3 px-5 hidden md:table-cell">Email</th>
+                                    <th className="section-header text-left py-3 px-5 hidden lg:table-cell">NIM / Kelas</th>
+                                    <th className="section-header text-left py-3 px-5">Role</th>
+                                    <th className="section-header text-right py-3 px-5">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border/40">
-                                {users?.data?.map(u => (
-                                    <tr key={u.id} className="hover:bg-dark-surface/50 transition-colors">
-                                        <td className="px-4 py-2.5 text-sm text-text-primary font-medium">{u.name}</td>
-                                        <td className="px-4 py-2.5 text-sm text-text-secondary hidden md:table-cell">{u.email}</td>
-                                        <td className="px-4 py-2.5 hidden lg:table-cell">
+                                {users?.data?.map((u, idx) => (
+                                    <tr key={u.id} className="hover:bg-dark-surface/30 transition-colors">
+                                        <td className="px-5 py-3.5 text-center text-sm text-text-secondary">
+                                            {(users.meta?.from ?? users.from ?? 1) + idx}
+                                        </td>
+                                        <td className="px-5 py-3.5 text-sm text-text-primary font-medium">{u.name}</td>
+                                        <td className="px-5 py-3.5 text-sm text-text-secondary hidden md:table-cell">{u.email}</td>
+                                        <td className="px-5 py-3.5 hidden lg:table-cell">
                                             <p className="identifier">{u.nim ?? '-'}</p>
                                             <p className="text-xs text-text-secondary">{u.kelas ?? '-'}</p>
                                         </td>
-                                        <td className="px-4 py-2.5">
+                                        <td className="px-5 py-3.5">
                                             <span className={`chip ${roleMap[u.role]?.cls ?? 'chip-neutral'}`}>{roleMap[u.role]?.label ?? u.role}</span>
                                         </td>
-                                        <td className="px-4 py-2.5 text-right">
+                                        <td className="px-5 py-3.5 text-right">
                                             <div className="flex gap-1 justify-end">
                                                 <button onClick={() => openEdit(u)} className="btn-ghost btn-sm px-1.5"><Pencil size={13} /></button>
                                                 <button onClick={() => handleDelete(u)} className="btn-danger btn-sm px-1.5"><Trash2 size={13} /></button>
@@ -171,7 +187,7 @@ export default function Index({ users, filters }) {
                                     </tr>
                                 ))}
                                 {!users?.data?.length && (
-                                    <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-text-secondary">Tidak ada user ditemukan.</td></tr>
+                                    <tr><td colSpan={6} className="px-5 py-12 text-center text-sm text-text-secondary">Tidak ada user ditemukan.</td></tr>
                                 )}
                             </tbody>
                         </table>

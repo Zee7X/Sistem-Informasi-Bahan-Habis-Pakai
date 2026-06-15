@@ -18,7 +18,7 @@ export default function Index({ laporan, bulanList, tahun, bulan, filters }) {
     return (
         <AppLayout title="Laporan BHP">
             <Head title="Laporan BHP" />
-            <div className="p-5 space-y-5">
+            <div className="p-5 space-y-5 max-w-7xl mx-auto">
                 
                 {/* Header Filter Panel */}
                 <div className="card p-4 flex flex-wrap gap-4 items-center justify-between">
@@ -86,7 +86,7 @@ export default function Index({ laporan, bulanList, tahun, bulan, filters }) {
 
                 {/* Table card */}
                 <div className="card overflow-hidden">
-                    <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-dark-surface/30">
+                    <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border bg-dark-surface/30">
                         <BarChart3 size={16} className="text-violet" />
                         <h2 className="text-sm font-semibold text-text-primary">Tabel Rekapitulasi Pemakaian Bahan</h2>
                     </div>
@@ -94,27 +94,31 @@ export default function Index({ laporan, bulanList, tahun, bulan, filters }) {
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-border bg-dark-surface/50">
-                                    <th className="section-header text-left py-3 px-4">Nama & Kode Bahan</th>
-                                    <th className="section-header text-right py-3 px-4">Stok Awal</th>
-                                    <th className="section-header text-right py-3 px-4">Total Masuk</th>
-                                    <th className="section-header text-right py-3 px-4">Total Keluar</th>
-                                    <th className="section-header text-right py-3 px-4">Stok Akhir</th>
+                                    <th className="section-header text-center py-3 px-5 w-12">No.</th>
+                                    <th className="section-header text-left py-3 px-5">Nama & Kode Bahan</th>
+                                    <th className="section-header text-right py-3 px-5">Stok Awal</th>
+                                    <th className="section-header text-right py-3 px-5">Total Masuk</th>
+                                    <th className="section-header text-right py-3 px-5">Total Keluar</th>
+                                    <th className="section-header text-right py-3 px-5">Stok Akhir</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border/40">
-                                {laporan?.items?.data?.length > 0 ? laporan.items.data.map(item => (
-                                    <tr key={item.bahan_id} className="hover:bg-dark-surface/50 transition-colors">
-                                        <td className="px-4 py-3">
+                                {laporan?.items?.data?.length > 0 ? laporan.items.data.map((item, idx) => (
+                                    <tr key={item.bahan_id} className="hover:bg-dark-surface/30 transition-colors">
+                                        <td className="px-5 py-3.5 text-center text-sm text-text-secondary">
+                                            {(laporan.items.meta?.from ?? laporan.items.from ?? 1) + idx}
+                                        </td>
+                                        <td className="px-5 py-3.5">
                                             <p className="text-sm font-medium text-text-primary">{item.nama_bahan}</p>
                                             <span className="identifier text-xs">{item.kode_bahan}</span>
                                         </td>
-                                        <td className="px-4 py-3 text-right text-sm text-text-secondary font-mono">{item.stok_awal}</td>
-                                        <td className="px-4 py-3 text-right text-sm text-success font-semibold font-mono">+{item.total_masuk}</td>
-                                        <td className="px-4 py-3 text-right text-sm text-error font-semibold font-mono">-{item.total_keluar}</td>
-                                        <td className="px-4 py-3 text-right text-sm font-bold text-text-primary font-mono">{item.stok_akhir}</td>
+                                        <td className="px-5 py-3.5 text-right text-sm text-text-secondary font-mono">{item.stok_awal}</td>
+                                        <td className="px-5 py-3.5 text-right text-sm text-success font-semibold font-mono">+{item.total_masuk}</td>
+                                        <td className="px-5 py-3.5 text-right text-sm text-error font-semibold font-mono">-{item.total_keluar}</td>
+                                        <td className="px-5 py-3.5 text-right text-sm font-bold text-text-primary font-mono">{item.stok_akhir}</td>
                                     </tr>
                                 )) : (
-                                    <tr><td colSpan={5} className="px-4 py-12 text-center text-sm text-text-secondary">Tidak ada data laporan pemakaian bahan untuk periode ini.</td></tr>
+                                    <tr><td colSpan={6} className="px-5 py-12 text-center text-sm text-text-secondary">Tidak ada data laporan pemakaian bahan untuk periode ini.</td></tr>
                                 )}
                             </tbody>
                         </table>
