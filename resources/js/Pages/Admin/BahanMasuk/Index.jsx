@@ -1,6 +1,7 @@
 import { Head, useForm, Link, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
+import SearchableSelect from '@/Components/SearchableSelect';
 import { Plus, X, Trash2, Search, Calendar, Landmark, ClipboardList, Info } from 'lucide-react';
 import { useState } from 'react';
 
@@ -11,6 +12,8 @@ export default function Index({ bahanMasuk, bahan, filters }) {
         bahan_id: '', jumlah: '', tanggal_masuk: new Date().toISOString().split('T')[0],
         pemasok: '', no_faktur: '', harga_satuan: '', keterangan: '',
     });
+
+    const selectedBahan = bahan?.find(b => String(b.id) === String(data.bahan_id));
 
     const submit = (e) => {
         e.preventDefault();
@@ -85,7 +88,12 @@ export default function Index({ bahanMasuk, bahan, filters }) {
                                                 <span>{formatTanggal(m.tanggal_masuk)}</span>
                                             </div>
                                         </td>
-                                        <td className="px-5 py-3.5 text-sm font-semibold text-text-primary">{m.bahan?.nama_bahan}</td>
+                                        <td className="px-5 py-3.5 text-sm text-text-primary">
+                                            <div className="font-semibold">{m.bahan?.nama_bahan}</div>
+                                            {m.bahan?.spesifikasi && (
+                                                <div className="text-2xs text-text-secondary mt-0.5">{m.bahan.spesifikasi}</div>
+                                            )}
+                                        </td>
                                         <td className="px-5 py-3.5 text-sm text-text-secondary hidden md:table-cell">
                                             <div className="flex items-center gap-1.5">
                                                 <Landmark size={13} className="text-text-secondary/60" />
@@ -122,15 +130,32 @@ export default function Index({ bahanMasuk, bahan, filters }) {
                             <div className="grid grid-cols-2 gap-3">
                                 <div className="col-span-2">
                                     <label className="block text-xs text-text-secondary mb-1 font-semibold">Bahan *</label>
-                                    <select value={data.bahan_id} onChange={e => setData('bahan_id', e.target.value)} required className="input">
-                                        <option value="">Pilih bahan...</option>
-                                        {bahan?.map(b => <option key={b.id} value={b.id}>{b.nama_bahan}</option>)}
-                                    </select>
+                                    <SearchableSelect
+                                        options={bahan}
+                                        value={data.bahan_id}
+                                        onChange={val => setData('bahan_id', val)}
+                                        placeholder="Pilih bahan..."
+                                        required
+                                    />
                                     {errors.bahan_id && <p className="mt-1 text-xs text-error">{errors.bahan_id}</p>}
                                 </div>
                                 <div>
                                     <label className="block text-xs text-text-secondary mb-1 font-semibold">Jumlah *</label>
-                                    <input type="number" min="1" value={data.jumlah} onChange={e => setData('jumlah', e.target.value)} required className="input" />
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            value={data.jumlah}
+                                            onChange={e => setData('jumlah', e.target.value)}
+                                            required
+                                            className={`input ${selectedBahan?.satuan?.nama ? 'pr-12' : ''}`}
+                                        />
+                                        {selectedBahan?.satuan?.nama && (
+                                            <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-text-secondary bg-dark-surface px-1.5 py-0.5 rounded border border-border">
+                                                {selectedBahan.satuan.nama}
+                                            </span>
+                                        )}
+                                    </div>
                                     {errors.jumlah && <p className="mt-1 text-xs text-error">{errors.jumlah}</p>}
                                 </div>
                                 <div>

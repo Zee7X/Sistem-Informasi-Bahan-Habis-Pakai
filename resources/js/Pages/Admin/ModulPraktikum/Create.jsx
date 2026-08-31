@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import SearchableSelect from '@/Components/SearchableSelect';
 import { ArrowLeft, Plus, Trash2, Save, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 
@@ -135,19 +136,14 @@ export default function Create({ bahan }) {
                                 <div key={index} className="flex flex-wrap items-center gap-3 p-3 bg-dark-surface/40 border border-border/60 rounded-md">
                                     <div className="flex-1 min-w-[200px]">
                                         <label className="block text-[10px] text-text-secondary mb-0.5 uppercase tracking-wider">Pilih Bahan *</label>
-                                        <select
+                                        <SearchableSelect
+                                            options={getAvailableBahan(index)}
                                             value={item.bahan_id}
-                                            onChange={e => handleItemChange(index, 'bahan_id', e.target.value)}
+                                            onChange={val => handleItemChange(index, 'bahan_id', val)}
+                                            placeholder="Pilih Bahan..."
+                                            renderExtra={b => `Stok: ${b.stok} ${b.satuan?.nama}`}
                                             required
-                                            className="input bg-dark-bg"
-                                        >
-                                            <option value="">Pilih Bahan...</option>
-                                            {getAvailableBahan(index).map(b => (
-                                                <option key={b.id} value={b.id}>
-                                                    {b.nama_bahan} (Stok: {b.stok} {b.satuan?.nama})
-                                                </option>
-                                            ))}
-                                        </select>
+                                        />
                                     </div>
                                     <div className="w-28">
                                         <label className="block text-[10px] text-text-secondary mb-0.5 uppercase tracking-wider">Jumlah *</label>

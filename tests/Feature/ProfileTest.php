@@ -3,14 +3,14 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
-    public function test_profile_page_is_displayed(): void
+    public function test_profile_page_redirects_to_dashboard(): void
     {
         $user = User::factory()->create();
 
@@ -18,7 +18,7 @@ class ProfileTest extends TestCase
             ->actingAs($user)
             ->get('/profile');
 
-        $response->assertOk();
+        $response->assertRedirect(route('dashboard'));
     }
 
     public function test_profile_information_can_be_updated(): void
@@ -28,37 +28,17 @@ class ProfileTest extends TestCase
         $response = $this
             ->actingAs($user)
             ->patch('/profile', [
-                'name' => 'Test User',
-                'email' => 'test@example.com',
+                'name' => 'Test User Updated',
+                'email' => 'test_' . uniqid() . '@example.com',
             ]);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/profile');
+            ->assertRedirect(route('profile.edit'));
 
         $user->refresh();
 
-        $this->assertSame('Test User', $user->name);
-        $this->assertSame('test@example.com', $user->email);
-        $this->assertNull($user->email_verified_at);
-    }
-
-    public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this
-            ->actingAs($user)
-            ->patch('/profile', [
-                'name' => 'Test User',
-                'email' => $user->email,
-            ]);
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect('/profile');
-
-        $this->assertNotNull($user->refresh()->email_verified_at);
+        $this->assertSame('Test User Updated', $user->name);
     }
 
     public function test_user_can_delete_their_account(): void

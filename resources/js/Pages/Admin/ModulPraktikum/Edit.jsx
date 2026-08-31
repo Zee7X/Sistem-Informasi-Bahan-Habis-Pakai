@@ -1,5 +1,6 @@
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import SearchableSelect from '@/Components/SearchableSelect';
 import { ArrowLeft, Plus, Trash2, Save, BookOpen, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 
@@ -118,19 +119,14 @@ export default function Edit({ modulPraktikum, bahan }) {
                             <form onSubmit={handleAddItemSubmit} className="flex flex-wrap items-end gap-3">
                                 <div className="flex-1 min-w-[200px]">
                                     <label className="block text-[10px] text-text-secondary mb-1 uppercase tracking-wider">Pilih Bahan BHP *</label>
-                                    <select
+                                    <SearchableSelect
+                                        options={availableBahan}
                                         value={itemForm.data.bahan_id}
-                                        onChange={e => itemForm.setData('bahan_id', e.target.value)}
+                                        onChange={val => itemForm.setData('bahan_id', val)}
+                                        placeholder="Pilih Bahan..."
+                                        renderExtra={b => `Stok: ${b.stok} ${b.satuan?.nama}`}
                                         required
-                                        className="input"
-                                    >
-                                        <option value="">Pilih Bahan...</option>
-                                        {availableBahan.map(b => (
-                                            <option key={b.id} value={b.id}>
-                                                {b.nama_bahan} (Stok: {b.stok} {b.satuan?.nama})
-                                            </option>
-                                        ))}
-                                    </select>
+                                    />
                                     {itemForm.errors.bahan_id && <p className="mt-1 text-xs text-error">{itemForm.errors.bahan_id}</p>}
                                 </div>
                                 <div className="w-28">

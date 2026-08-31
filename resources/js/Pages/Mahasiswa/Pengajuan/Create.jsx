@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import SearchableSelect from '@/Components/SearchableSelect';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -154,10 +155,14 @@ export default function Create({ moduls, bahan }) {
             <div key={i} className="flex flex-col gap-1">
                 <div className="flex gap-2 items-start">
                     <div className="flex-1">
-                        <select value={item.bahan_id} onChange={e => updateItem(i, 'bahan_id', e.target.value)} required className="input">
-                            <option value="">Pilih bahan...</option>
-                            {bahan?.map(b => <option key={b.id} value={b.id}>{b.nama_bahan} (Stok: {b.stok} {b.satuan?.nama})</option>)}
-                        </select>
+                        <SearchableSelect
+                            options={bahan}
+                            value={item.bahan_id}
+                            onChange={val => updateItem(i, 'bahan_id', val)}
+                            placeholder="Pilih bahan..."
+                            renderExtra={b => `Stok: ${b.stok} ${b.satuan?.nama}`}
+                            required
+                        />
                     </div>
                     <div className="w-24">
                         <input

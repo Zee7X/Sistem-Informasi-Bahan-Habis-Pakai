@@ -1,6 +1,7 @@
 import { Head, useForm, Link, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import Pagination from '@/Components/Pagination';
+import SearchableSelect from '@/Components/SearchableSelect';
 import { Plus, X, Search, Calendar, Database, Sparkles, ClipboardList } from 'lucide-react';
 import { useState } from 'react';
 
@@ -111,8 +112,11 @@ export default function Index({ stockOpname, bahan, filters }) {
                                                 <span>{formatTanggal(op.created_at)}</span>
                                             </div>
                                         </td>
-                                        <td className="px-5 py-3.5 text-sm font-semibold text-text-primary">
-                                            {op.bahan?.nama_bahan}
+                                        <td className="px-5 py-3.5 text-sm text-text-primary">
+                                            <div className="font-semibold">{op.bahan?.nama_bahan}</div>
+                                            {op.bahan?.spesifikasi && (
+                                                <div className="text-2xs text-text-secondary mt-0.5">{op.bahan.spesifikasi}</div>
+                                            )}
                                         </td>
                                         <td className="px-5 py-3.5 text-right text-sm text-text-secondary hidden md:table-cell font-mono">{op.stok_sebelum}</td>
                                         <td className="px-5 py-3.5 text-right text-sm text-text-secondary hidden md:table-cell font-mono">{op.stok_sesuai}</td>
@@ -149,24 +153,41 @@ export default function Index({ stockOpname, bahan, filters }) {
                             <button onClick={() => setShowModal(false)} className="btn-ghost btn-sm px-1.5"><X size={14} /></button>
                         </div>
                         <form onSubmit={submit} className="p-5 space-y-3">
-                            <div>
-                                <label className="block text-xs text-text-secondary mb-1 font-semibold">Bahan *</label>
-                                <select value={data.bahan_id} onChange={e => setData('bahan_id', e.target.value)} required className="input">
-                                    <option value="">Pilih bahan...</option>
-                                    {bahan?.map(b => (
-                                        <option key={b.id} value={b.id}>{b.nama_bahan} — Stok: {b.stok}</option>
-                                    ))}
-                                </select>
-                            </div>
+                             <div>
+                                 <label className="block text-xs text-text-secondary mb-1 font-semibold">Bahan *</label>
+                                 <SearchableSelect
+                                     options={bahan}
+                                     value={data.bahan_id}
+                                     onChange={val => setData('bahan_id', val)}
+                                     placeholder="Pilih bahan..."
+                                     renderExtra={b => `Stok: ${b.stok}`}
+                                     required
+                                 />
+                             </div>
                             {selectedBahan && (
                                 <div className="bg-dark-surface/50 border border-border/80 rounded px-3 py-2 text-xs text-text-secondary flex items-center gap-1.5">
                                     <Database size={13} className="text-violet" />
-                                    <span>Stok tercatat sistem saat ini: <strong className="text-text-primary font-bold">{selectedBahan.stok}</strong></span>
+                                    <span>Stok tercatat sistem saat ini: <strong className="text-text-primary font-bold">{selectedBahan.stok} {selectedBahan.satuan?.nama}</strong></span>
                                 </div>
                             )}
                             <div>
                                 <label className="block text-xs text-text-secondary mb-1 font-semibold">Stok Fisik Aktual *</label>
-                                <input type="number" min="0" value={data.stok_sesuai} onChange={e => setData('stok_sesuai', e.target.value)} required className="input" placeholder="Jumlah stok setelah penghitungan fisik" />
+                                <div className="relative">
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={data.stok_sesuai}
+                                        onChange={e => setData('stok_sesuai', e.target.value)}
+                                        required
+                                        className={`input ${selectedBahan?.satuan?.nama ? 'pr-12' : ''}`}
+                                        placeholder="Jumlah stok setelah penghitungan fisik"
+                                    />
+                                    {selectedBahan?.satuan?.nama && (
+                                        <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-text-secondary bg-dark-surface px-1.5 py-0.5 rounded border border-border">
+                                            {selectedBahan.satuan.nama}
+                                        </span>
+                                    )}
+                                </div>
                                 {errors.stok_sesuai && <p className="mt-1 text-xs text-error">{errors.stok_sesuai}</p>}
                             </div>
                             <div>

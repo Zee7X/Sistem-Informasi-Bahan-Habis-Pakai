@@ -61,6 +61,6 @@ class BahanService
 
     public function all(): \Illuminate\Database\Eloquent\Collection
     {
-        return Bahan::orderBy('nama_bahan')->get();
+        return Bahan::with('satuan')->orderBy('nama_bahan')->get();
     }
 }

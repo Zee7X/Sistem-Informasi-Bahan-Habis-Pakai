@@ -1,17 +1,56 @@
 # 🧪 Sistem Informasi Bahan Habis Pakai (BHP) Laboratorium
 
+<div align="center">
+
+![BHP Lab](https://img.shields.io/badge/BHP_Lab-Politeknik_Negeri_Cilacap-2BA8A2?style=for-the-badge&logo=flask&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Inertia.js](https://img.shields.io/badge/Inertia.js-3-9553E9?style=for-the-badge&logo=inertia&logoColor=white)
+
+</div>
+
 Sistem Informasi **Bahan Habis Pakai (BHP)** adalah platform berbasis web modern yang dirancang untuk mendigitalisasi pengelolaan stok, inventaris, dan alur penggunaan bahan di lingkungan laboratorium. Sistem ini memastikan akurasi data stok melalui sistem *audit trail* yang ketat, alur persetujuan bertingkat, dan ketahanan terhadap *race condition*.
+
+---
+
+## 🎨 Design System
+
+Aplikasi ini menggunakan **Flip7 Design System** — palet retro-playful teal-coral-gold yang bold, joyful, dan tactile.
+
+### Palet Warna Utama
+
+| Token | Hex | Fungsi |
+|---|---|---|
+| **Primary Teal** | `#2BA8A2` | UI utama, sidebar, avatar, progress |
+| **Accent Gold** | `#FFD23F` | CTA buttons, highlights, celebrations |
+| **Coral** | `#EF6C4A` | Warning, stok kritis, error states |
+| **Cream** | `#FFF8E7` | Input surfaces, card backgrounds |
+| **Surface Base** | `#EFF8F7` | Page background |
+
+### Komponen Kunci
+
+- **Buttons**: Pill-shape (`border-radius: 9999px`), min 44px height — Gold CTA untuk aksi utama
+- **Cards**: Left-border 6px accent (teal/coral/gold per state) + colored glow shadow
+- **Inputs**: Cream (`#FFF8E7`) background, teal focus ring
+- **Status Chips**: Pill badge dengan glow shadow
+- **Section Headers**: Dashed bottom border (`border-bottom: 2px dashed teal`)
+- **Typography**: **Outfit** extra-bold (800) untuk judul, **Inter** untuk body
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Laravel 12 (PHP 8.2+)
-- **Frontend**: React.js via Inertia.js
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **Database**: MySQL / MariaDB
-- **Reporting**: DomPDF (PDF) & Stream CSV
+| Layer | Teknologi |
+|---|---|
+| **Backend** | Laravel 12 (PHP 8.2+) |
+| **Frontend** | React 19 via Inertia.js |
+| **Styling** | Tailwind CSS 3.4 + Flip7 Design System |
+| **Font** | Outfit (display) + Inter (body) via Google Fonts |
+| **Icons** | Lucide React |
+| **Database** | MySQL / MariaDB |
+| **Reporting** | DomPDF (PDF) & Stream CSV |
+| **Alerts** | SweetAlert2 |
 
 ---
 
@@ -176,5 +215,45 @@ Gunakan akun di bawah ini setelah menjalankan seed database:
 | **2** | **Mahasiswa** | `mahasiswa@bhp.com` | `12345` | Membuat pengajuan |
 | **3** | **Ketua Jurusan** | `ketua@bhp.com` | `12345` | Approval restock & monitoring |
 
+> **Catatan:** Fitur *lupa password* belum diimplementasikan. Hubungi admin untuk reset password manual via database.
+
 ---
-🤖 *Generated with Claude Code*
+
+## 📁 Struktur Direktori Utama
+
+```
+sistem-infromasi-bhp/
+├── app/
+│   ├── Http/Controllers/
+│   │   ├── Admin/          # BahanMasuk, Laporan, LogStok, ModulPraktikum, Satuan, StockOpname, User
+│   │   ├── Mahasiswa/      # Katalog
+│   │   ├── KetuaJurusan/   # BahanMasuk, Laporan
+│   │   ├── Api/            # BahanApi, ModulApi
+│   │   ├── BahanController.php
+│   │   ├── DashboardController.php
+│   │   └── PengajuanController.php
+│   └── Models/
+│       ├── Bahan.php, BahanMasuk.php, LogStok.php
+│       ├── ModulPraktikum.php, ModulPraktikumItem.php
+│       ├── Pengajuan.php, PengajuanItem.php
+│       ├── Satuan.php, StockOpname.php, User.php
+├── resources/
+│   ├── css/app.css         # Flip7 Design System global styles
+│   └── js/
+│       ├── Layouts/AppLayout.jsx   # Sidebar + Topbar (Flip7 themed)
+│       ├── Components/             # Pagination, SearchableSelect
+│       └── Pages/
+│           ├── Auth/Login.jsx      # Flip7 login page
+│           ├── Dashboard.jsx       # Unified dashboard (role-based)
+│           ├── Admin/              # Bahan, BahanMasuk, Laporan, LogStok, ModulPraktikum, Pengajuan, Satuan, StockOpname, Users
+│           ├── Mahasiswa/          # Katalog, Pengajuan
+│           └── KetuaJurusan/       # BahanMasuk, Laporan, Transaksi
+├── tailwind.config.js      # Flip7 design tokens
+└── routes/web.php          # RBAC route definitions
+```
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ for Politeknik Negeri Cilacap — Lab TPPL</sub>
+</div>
