@@ -212,24 +212,6 @@ export default function Login({ status }) {
                                     )}
                                 </button>
                             </form>
-
-                            {/* Demo credentials hint */}
-                            <div
-                                className="mt-5 p-3 rounded-xl text-center"
-                                style={{
-                                    background: 'rgba(43,168,162,0.06)',
-                                    border: '1px dashed rgba(43,168,162,0.30)',
-                                }}
-                            >
-                                <p className="text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: '#5A8A86' }}>
-                                    Akun Demo
-                                </p>
-                                <div className="space-y-0.5 text-[11px]" style={{ color: '#5A8A86' }}>
-                                    <p><span className="font-bold" style={{ color: '#0D3B38' }}>Admin:</span> admin@bhp.com / 12345</p>
-                                    <p><span className="font-bold" style={{ color: '#0D3B38' }}>Mahasiswa:</span> mahasiswa@bhp.com / 12345</p>
-                                    <p><span className="font-bold" style={{ color: '#0D3B38' }}>Ketua Jurusan:</span> ketua@bhp.com / 12345</p>
-                                </div>
-                            </div>
                         </div>
                     </div>
 

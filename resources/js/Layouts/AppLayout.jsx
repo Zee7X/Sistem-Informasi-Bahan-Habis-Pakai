@@ -4,7 +4,7 @@ import {
     LayoutDashboard, FlaskConical, PackagePlus, ClipboardList,
     BarChart3, Users, Tag, BookOpen, ClipboardCheck,
     FileText, ChevronLeft, ChevronRight, LogOut, Menu, X,
-    ChevronsUpDown, Settings, HelpCircle, Keyboard, Check, User,
+    HelpCircle, Keyboard,
     Bell, History
 } from 'lucide-react';
 
@@ -99,7 +99,6 @@ export default function AppLayout({ children, title }) {
 
     // UI Modals & Dropdown States
     const [switcherOpen, setSwitcherOpen] = useState(false);
-    const [profileModalOpen, setProfileModalOpen] = useState(false);
     const [helpModalOpen, setHelpModalOpen] = useState(false);
     const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
 
@@ -131,7 +130,6 @@ export default function AppLayout({ children, title }) {
 
             if (e.key === 'Escape') {
                 setShortcutsModalOpen(false);
-                setProfileModalOpen(false);
                 setHelpModalOpen(false);
                 setSwitcherOpen(false);
                 return;
@@ -211,14 +209,6 @@ export default function AppLayout({ children, title }) {
 
             {/* Bottom Actions */}
             <div className="flex-shrink-0 border-t border-border p-2 space-y-0.5">
-                <button
-                    onClick={() => setProfileModalOpen(true)}
-                    className={`nav-item w-full ${collapsed ? 'justify-center px-0 w-10 mx-auto' : ''}`}
-                    title="Pengaturan Profil"
-                >
-                    <Settings size={15} />
-                    {!collapsed && <span>Pengaturan</span>}
-                </button>
                 <button
                     onClick={() => setHelpModalOpen(true)}
                     className={`nav-item w-full ${collapsed ? 'justify-center px-0 w-10 mx-auto' : ''}`}
@@ -429,13 +419,6 @@ export default function AppLayout({ children, title }) {
                                         </p>
                                         <p className="text-[10px] text-text-secondary truncate mt-0.5">{user?.email}</p>
                                     </div>
-                                    <button
-                                        onClick={() => { setSwitcherOpen(false); setProfileModalOpen(true); }}
-                                        className="flex items-center gap-2 px-3 py-2 text-xs text-text-secondary hover:text-teal hover:bg-teal/10 rounded-lg transition-colors text-left w-full cursor-pointer font-medium"
-                                    >
-                                        <User size={13} />
-                                        <span>Profil Saya</span>
-                                    </button>
                                     <Link
                                         href="/logout"
                                         method="post"
@@ -459,49 +442,6 @@ export default function AppLayout({ children, title }) {
             </div>
 
             {/* ── MODALS ───────────────────────────────────── */}
-
-            {/* Profile Modal */}
-            {profileModalOpen && (
-                <ModalBackdrop onClose={() => setProfileModalOpen(false)}>
-                    <ModalCard className="max-w-sm w-full">
-                        <ModalHeader icon={User} title="Profil Pengguna" onClose={() => setProfileModalOpen(false)} />
-                        <div className="p-5 space-y-4">
-                            {/* Avatar Section */}
-                            <div className="flex flex-col items-center text-center pb-4" style={{ borderBottom: '2px dashed rgba(43,168,162,0.20)' }}>
-                                <div
-                                    className="w-16 h-16 rounded-full flex items-center justify-center font-extrabold text-white text-lg mb-3"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #2BA8A2 0%, #1E8C86 100%)',
-                                        boxShadow: '0 6px 20px rgba(43,168,162,0.40)',
-                                        fontFamily: 'Outfit, sans-serif',
-                                    }}
-                                >
-                                    {initials}
-                                </div>
-                                <h4 className="text-sm font-extrabold text-text-primary" style={{ fontFamily: 'Outfit, sans-serif' }}>{user?.name}</h4>
-                                <span className="role-badge mt-2 text-[9px]">{roleLabel}</span>
-                            </div>
-                            {/* Info Grid */}
-                            <div className="space-y-2.5 text-xs">
-                                {[
-                                    { label: 'Email', value: user?.email },
-                                    user?.nim ? { label: role === 'mahasiswa' ? 'NIM' : 'NIDN / NIP', value: user.nim } : null,
-                                    user?.kelas ? { label: 'Kelas', value: user.kelas } : null,
-                                    user?.program_studi ? { label: 'Prodi', value: user.program_studi } : null,
-                                    user?.angkatan ? { label: 'Angkatan', value: user.angkatan } : null,
-                                    user?.no_telp ? { label: 'No. Telp', value: user.no_telp } : null,
-                                ].filter(Boolean).map((row, i) => (
-                                    <div key={i} className="grid grid-cols-3 gap-2">
-                                        <span className="text-text-secondary font-medium col-span-1">{row.label}</span>
-                                        <span className="text-text-primary font-semibold col-span-2 break-all">{row.value ?? '-'}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <ModalFooter onClose={() => setProfileModalOpen(false)} />
-                    </ModalCard>
-                </ModalBackdrop>
-            )}
 
             {/* Help Modal */}
             {helpModalOpen && (
