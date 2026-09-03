@@ -1,0 +1,37 @@
+# Render Blueprint: deploy with a single "New +" -> "Blueprint"
+# Database (Aiven MySQL: user bhp_app, db db_bhp) dibuat manual di console Aiven;
+# isi nilai DB_* di dashboard Render setelah prompt deploy pertama.
+services:
+  - type: web
+    name: bhp-lab
+    runtime: docker
+    plan: free
+    healthCheckPath: /login
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_NAME
+        value: "Sistem BHP Lab"
+      # Isi dengan `php artisan key:generate --show` (lihat petunjuk deploy)
+      - key: APP_KEY
+        sync: false
+      - key: TRUSTED_PROXIES
+        value: "*"
+      # Aiven MySQL connection (fill in the Render dashboard)
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      # Path ke sertifikat CA Aiven (commit ca.pem di root repo)
+      - key: MYSQL_ATTR_SSL_CA
+        value: /var/www/html/ca.pem

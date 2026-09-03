@@ -61,11 +61,17 @@ class ModulPraktikumSeeder extends Seeder
             $items = $modulData['items'];
             unset($modulData['items']);
 
-            $modul = ModulPraktikum::create([
-                ...$modulData,
-                'created_by' => $admin?->id,
-                'is_active'  => true,
-            ]);
+            $modul = ModulPraktikum::updateOrCreate(
+                ['kode_modul' => $modulData['kode_modul']],
+                [
+                    ...$modulData,
+                    'created_by' => $admin?->id,
+                    'is_active'  => true,
+                ]
+            );
+
+            // Sinkronkan items agar idempotent (tidak duplikat saat re-seed)
+            $modul->items()->delete();
 
             foreach ($items as $itemData) {
                 // Cari bahan berdasarkan nama (case insensitive, partial match)

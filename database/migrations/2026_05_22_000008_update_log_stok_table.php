@@ -13,8 +13,14 @@ return new class extends Migration
             $table->integer('stok_sebelum')->nullable()->after('jumlah');
         });
 
-        // Update enum to add 'opname' value (MySQL specific)
-        DB::statement("ALTER TABLE log_stok MODIFY COLUMN jenis ENUM('masuk','keluar','adjust','opname') NOT NULL");
+        // Tambah nilai 'opname' pada enum jenis (MySQL syntax, Aiven-compatible)
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE log_stok MODIFY COLUMN jenis ENUM('masuk','keluar','adjust','opname') NOT NULL");
+        } else {
+            Schema::table('log_stok', function (Blueprint $table) {
+                $table->string('jenis', 20)->change();
+            });
+        }
     }
 
     public function down(): void

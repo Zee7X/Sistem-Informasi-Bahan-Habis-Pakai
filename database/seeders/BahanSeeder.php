@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Satuan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -10,6 +11,9 @@ class BahanSeeder extends Seeder
 {
     public function run(): void
     {
+        // Bersihkan data lama agar idempotent saat re-deploy (restart container di Render)
+        DB::table('bahan')->delete();
+
         $bahan = [
             ['kode_bahan' => 'BHN001', 'nama_bahan' => 'NaOH', 'spesifikasi' => 'Natrium Hidroksida'],
             ['kode_bahan' => 'BHN002', 'nama_bahan' => 'Mg(OH)₂', 'spesifikasi' => 'Magnesium Hidroksida'],
@@ -55,16 +59,20 @@ class BahanSeeder extends Seeder
             ['kode_bahan' => 'BHN042', 'nama_bahan' => 'Na₂HPO₄·12H₂O', 'spesifikasi' => 'Dinatrium Hidrogen Fosfat'],
         ];
 
-        $getSatuanId = function ($nama, $spesifikasi) {
+        // Map satuan by name (bukan hardcode id) agar aman saat tabel belum berisi
+        // atau saat sequence/id berbeda antar environment.
+        $satuanMap = Satuan::pluck('id', 'nama')->all();
+        $fallbackId = Satuan::value('id');
+
+        $getSatuanId = function ($nama, $spesifikasi) use ($satuanMap, $fallbackId) {
             $namaLower = Str::lower($nama . ' ' . $spesifikasi);
 
             if (Str::contains($namaLower, ['asam', 'chloride', 'oxide', 'sulfate', 'solution', 'so₂', 'pac'])) {
-                return 1; 
+                return $satuanMap['Liter'] ?? $fallbackId;
             } elseif (Str::contains($namaLower, ['karbon aktif', 'powder', 'tawas', 'urea', 'glukosa', 'benzoat', 'sukrosa', 'magnesium', 'natrium', 'kalium', 'besi'])) {
-                return 4;
-            } else {
-                return 2; 
+                return $satuanMap['Gram'] ?? $fallbackId;
             }
+            return $satuanMap['Pcs'] ?? $fallbackId;
         };
 
         $data = collect($bahan)->map(function ($item) use ($getSatuanId) {

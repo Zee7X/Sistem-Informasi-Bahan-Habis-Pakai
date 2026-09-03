@@ -16,6 +16,14 @@ class DummyDataSeeder extends Seeder
 {
     public function run(): void
     {
+        // Idempotent: bersihkan transaksi dummy lama agar aman saat re-deploy
+        // (urutan hapus mengikuti FK: child table dulu).
+        PengajuanItem::query()->delete();
+        Pengajuan::query()->delete();
+        LogStok::query()->delete();
+        StockOpname::query()->delete();
+        BahanMasuk::query()->delete();
+
         $admin      = User::where('role', 'admin')->first();
         $kjur       = User::where('role', 'ketua_jurusan')->first();
         $mahasiswas = User::where('role', 'mahasiswa')->get();
