@@ -14,6 +14,9 @@ services:
         value: "false"
       - key: APP_NAME
         value: "Sistem BHP Lab"
+      # URL produksi agar link absolut (reset password, signed URL) pakai https
+      - key: APP_URL
+        value: https://bhp-lab.onrender.com
       # Isi dengan `php artisan key:generate --show` (lihat petunjuk deploy)
       - key: APP_KEY
         sync: false

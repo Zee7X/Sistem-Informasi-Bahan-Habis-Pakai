@@ -72,12 +72,11 @@ return [
     | Trusted Proxies
     |--------------------------------------------------------------------------
     |
-    | Proxy yang dipercaya untuk header X-Forwarded-*. Set "*" saat berjalan
-    | di belakang reverse proxy seperti Render (dibaca middleware TrustProxies).
+    | Dibaca oleh $middleware->trustProxies(at:) di bootstrap/app.php.
+    | Set "*" saat berjalan di belakang reverse proxy seperti Render agar
+    | header X-Forwarded-Proto/Host dipercaya (asset URL ikut https).
     |
     */
-
-    'trusted_proxies' => env('TRUSTED_PROXIES'),
 
     /*
     |--------------------------------------------------------------------------
