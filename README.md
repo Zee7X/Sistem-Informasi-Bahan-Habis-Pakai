@@ -177,7 +177,20 @@ npm run dev
 
 ---
 
+## 🌐 Live Demo
+
+Aplikasi sudah ter-deploy dan dapat diakses publik di:
+
+**➡️ [https://bhp-lab.onrender.com](https://bhp-lab.onrender.com)**
+
+> [!NOTE]
+> Hosted di Render (free plan) + Aiven MySQL. Instance free tier akan *spin down* setelah ±15 menit tanpa aktivitas, jadi akses pertama bisa memakan waktu hingga ±50 detik. Sesudah itu aplikasi berjalan normal.
+
+---
+
 ## 🔑 Akun Demo
+
+Gunakan akun berikut untuk mencoba live demo:
 
 | Role            | Email               | Password |
 | --------------- | ------------------- | -------- |
