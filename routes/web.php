@@ -15,11 +15,31 @@ use App\Http\Controllers\KetuaJurusan\BahanMasukController as KjurBahanMasukCont
 use App\Http\Controllers\KetuaJurusan\LaporanController as KjurLaporanController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
 
 Route::get('/', fn () => redirect('/login'));
+
+// Keep-alive untuk demo portfolio di Render: GitHub Actions memanggil
+// endpoint ini pada jam kerja agar service tidak idle dan Aiven menerima
+// aktivitas query. Token dibandingkan constant-time; tanpa token -> 404.
+Route::get('/api/keepalive', function () {
+    $expectedToken = (string) config('keepalive.token');
+    $providedToken = (string) request()->header('X-Keepalive-Token');
+
+    if ($expectedToken === '' || ! hash_equals($expectedToken, $providedToken)) {
+        abort(404);
+    }
+
+    DB::select('SELECT 1');
+
+    return response()->json([
+        'status' => 'ok',
+        'database' => 'connected',
+    ]);
+});
 
 
 // ============================================================
