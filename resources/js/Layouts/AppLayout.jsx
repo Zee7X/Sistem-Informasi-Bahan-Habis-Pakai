@@ -5,7 +5,6 @@ import {
     BarChart3, Users, Tag, BookOpen, ClipboardCheck,
     FileText, ChevronLeft, ChevronRight, LogOut, Menu, X,
     HelpCircle, Keyboard,
-    Bell, History
 } from 'lucide-react';
 
 const navConfig = {
@@ -32,7 +31,7 @@ const navConfig = {
             section: 'Laporan & Log',
             items: [
                 { label: 'Laporan BHP',     href: '/admin/laporan',         icon: BarChart3,       route: 'admin.laporan' },
-                { label: 'Log Stok',        href: '/admin/log-stok',        icon: History,         route: 'admin.log-stok' },
+                { label: 'Log Stok',        href: '/admin/log-stok',        icon: FileText,        route: 'admin.log-stok' },
             ],
         },
     ],
@@ -80,11 +79,7 @@ function NavItem({ item, collapsed }) {
             `}
             title={collapsed ? item.label : undefined}
         >
-            <Icon
-                size={16}
-                className={isActive ? 'text-teal' : 'text-text-secondary'}
-                strokeWidth={isActive ? 2.5 : 2}
-            />
+            <Icon size={16} strokeWidth={2} />
             {!collapsed && <span>{item.label}</span>}
         </Link>
     );
@@ -97,7 +92,6 @@ export default function AppLayout({ children, title }) {
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    // UI Modals & Dropdown States
     const [switcherOpen, setSwitcherOpen] = useState(false);
     const [helpModalOpen, setHelpModalOpen] = useState(false);
     const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
@@ -165,26 +159,17 @@ export default function AppLayout({ children, title }) {
     }, [role]);
 
     const SidebarContent = () => (
-        <div className="flex flex-col h-full relative">
+        <div className="flex flex-col h-full">
 
-            {/* Brand Logo */}
-            <div className={`px-4 py-5 border-b border-border flex-shrink-0 flex items-center gap-3 ${collapsed ? 'justify-center px-0' : ''}`}>
-                {/* Icon */}
-                <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{
-                        background: 'linear-gradient(135deg, #2BA8A2 0%, #3CC4BD 100%)',
-                        boxShadow: '0 4px 12px rgba(43,168,162,0.40)',
-                    }}
-                >
-                    <FlaskConical size={18} className="text-white" strokeWidth={2.5} />
+            {/* Brand */}
+            <div className={`h-14 flex items-center gap-2.5 border-b border-border flex-shrink-0 px-4 ${collapsed ? 'justify-center px-0' : ''}`}>
+                <div className="w-8 h-8 rounded-md bg-teal flex items-center justify-center flex-shrink-0">
+                    <FlaskConical size={16} className="text-white" strokeWidth={2} />
                 </div>
                 {!collapsed && (
                     <div className="min-w-0">
-                        <p className="text-sm font-extrabold text-text-primary leading-none tracking-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                            BHP Lab
-                        </p>
-                        <p className="text-[9px] font-semibold text-text-secondary uppercase tracking-widest mt-1 leading-none">
+                        <p className="text-sm font-bold text-text-primary leading-none font-display">BHP Lab</p>
+                        <p className="text-3xs font-medium text-text-secondary uppercase tracking-wider mt-1 leading-none">
                             Politeknik Negeri Cilacap
                         </p>
                     </div>
@@ -196,7 +181,7 @@ export default function AppLayout({ children, title }) {
                 {navGroups.map((group) => (
                     <div key={group.section}>
                         {!collapsed && (
-                            <p className="section-header mx-1 mb-2">{group.section}</p>
+                            <p className="section-header px-3 mb-1.5">{group.section}</p>
                         )}
                         <div className="space-y-0.5">
                             {group.items.map((item) => (
@@ -229,88 +214,39 @@ export default function AppLayout({ children, title }) {
         </div>
     );
 
-    /* ── Modal base styling shared ──────────────────────── */
-    const ModalBackdrop = ({ onClose, children }) => (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-slide-up"
-            style={{ background: 'rgba(13,59,56,0.55)', backdropFilter: 'blur(4px)' }}
-        >
-            <div onClick={onClose} className="absolute inset-0" />
-            <div className="relative z-10">{children}</div>
-        </div>
-    );
-
-    const ModalCard = ({ children, className = '' }) => (
-        <div
-            className={`bg-white rounded-xl overflow-hidden flex flex-col ${className}`}
-            style={{ boxShadow: '0 20px 60px rgba(43,168,162,0.20), 0 4px 16px rgba(0,0,0,0.08)' }}
-        >
-            {children}
-        </div>
-    );
-
-    const ModalHeader = ({ icon: Icon, title, onClose }) => (
-        <div
-            className="flex items-center justify-between px-5 py-4"
-            style={{ background: 'linear-gradient(135deg, #EFF8F7, #E8F6F5)', borderBottom: '2px dashed rgba(43,168,162,0.25)' }}
-        >
-            <h3 className="text-sm font-extrabold text-text-primary flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                <Icon size={16} className="text-teal" />
-                {title}
-            </h3>
-            <button
-                onClick={onClose}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-text-secondary hover:text-coral hover:bg-coral/10 transition-colors cursor-pointer"
-            >
-                <X size={14} />
-            </button>
-        </div>
-    );
-
-    const ModalFooter = ({ onClose, label = 'Tutup' }) => (
-        <div className="px-5 py-3 flex justify-end" style={{ background: '#F8FFFE', borderTop: '1px solid #C8E6E4' }}>
-            <button onClick={onClose} className="btn-primary btn-sm cursor-pointer">
-                {label}
-            </button>
-        </div>
-    );
-
     return (
-        <div className="flex h-screen overflow-hidden" style={{ background: '#EFF8F7' }}>
+        <div className="flex h-screen overflow-hidden bg-dark-bg">
 
             {/* Desktop Sidebar */}
             <aside
                 className={`hidden lg:flex flex-col flex-shrink-0 bg-white border-r border-border transition-all duration-200 relative ${
-                    collapsed ? 'w-14' : 'w-[232px]'
+                    collapsed ? 'w-16' : 'w-60'
                 }`}
-                style={{ boxShadow: '4px 0 20px rgba(43,168,162,0.07)' }}
             >
                 <SidebarContent />
                 {/* Collapse toggle */}
                 <button
                     onClick={() => setCollapsed(c => !c)}
-                    className="absolute bottom-24 -right-3.5 w-7 h-7 rounded-full border-2 border-border flex items-center justify-center text-text-secondary hover:text-teal hover:border-teal transition-colors z-10 bg-white"
-                    style={{ boxShadow: '0 2px 8px rgba(43,168,162,0.15)' }}
+                    className="absolute bottom-20 -right-3 w-6 h-6 rounded-full border border-border bg-white flex items-center justify-center text-text-secondary hover:text-teal hover:border-teal transition-colors z-10 shadow-sm"
+                    title={collapsed ? 'Perluas sidebar' : 'Ciutkan sidebar'}
                 >
-                    {collapsed ? <ChevronRight size={12} strokeWidth={2.5} /> : <ChevronLeft size={12} strokeWidth={2.5} />}
+                    {collapsed ? <ChevronRight size={12} strokeWidth={2} /> : <ChevronLeft size={12} strokeWidth={2} />}
                 </button>
             </aside>
 
             {/* Mobile Overlay */}
             {mobileOpen && (
                 <div
-                    className="fixed inset-0 z-40 lg:hidden"
-                    style={{ background: 'rgba(13,59,56,0.50)', backdropFilter: 'blur(4px)' }}
+                    className="fixed inset-0 z-40 bg-black/50 lg:hidden"
                     onClick={() => setMobileOpen(false)}
                 />
             )}
 
             {/* Mobile Sidebar */}
             <aside
-                className={`fixed left-0 top-0 bottom-0 z-50 w-[232px] bg-white border-r border-border flex flex-col lg:hidden transition-transform duration-200 ${
+                className={`fixed left-0 top-0 bottom-0 z-50 w-60 bg-white border-r border-border flex flex-col lg:hidden transition-transform duration-200 ${
                     mobileOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}
-                style={{ boxShadow: '4px 0 20px rgba(43,168,162,0.10)' }}
             >
                 <SidebarContent />
             </aside>
@@ -319,60 +255,24 @@ export default function AppLayout({ children, title }) {
             <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
 
                 {/* Topbar */}
-                <header
-                    className="flex items-center gap-4 px-6 h-14 flex-shrink-0 justify-between bg-white border-b border-border relative"
-                    style={{ boxShadow: '0 2px 12px rgba(43,168,162,0.07)' }}
-                >
-                    {/* Teal accent stripe */}
-                    <div
-                        className="absolute top-0 left-0 right-0 h-0.5"
-                        style={{ background: 'linear-gradient(90deg, #2BA8A2, #FFD23F, #EF6C4A, #2BA8A2)' }}
-                    />
+                <header className="flex items-center gap-4 px-6 h-14 flex-shrink-0 justify-between bg-white border-b border-border">
 
                     {/* Left: Mobile toggle + Title */}
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                         <button
                             className="lg:hidden nav-item w-9 h-9 justify-center px-0 flex-shrink-0"
                             onClick={() => setMobileOpen(o => !o)}
+                            title="Menu"
                         >
                             {mobileOpen ? <X size={16} /> : <Menu size={16} />}
                         </button>
-                        <h1 className="lg:hidden text-sm font-extrabold text-text-primary truncate" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                        <h1 className="lg:hidden text-sm font-semibold text-text-primary truncate font-display">
                             {title}
                         </h1>
                     </div>
 
-                    {/* Right: Workspace badge + Bell + User */}
+                    {/* Right: User */}
                     <div className="flex items-center gap-3 flex-shrink-0">
-
-                        {/* Workspace Pill */}
-                        <div
-                            className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-dark-bg"
-                            style={{ boxShadow: '0 1px 4px rgba(43,168,162,0.12)' }}
-                        >
-                            <span
-                                className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full text-white"
-                                style={{ background: 'linear-gradient(135deg, #2BA8A2, #3CC4BD)', fontFamily: 'Outfit, sans-serif' }}
-                            >
-                                Lab
-                            </span>
-                            <span className="text-xs font-bold text-text-primary">BHP Lab</span>
-                        </div>
-
-                        <div className="hidden md:block w-px h-5 bg-border" />
-
-                        {/* Notification Bell */}
-                        <button
-                            className="w-9 h-9 rounded-full border border-border flex items-center justify-center text-text-secondary hover:text-teal hover:border-teal transition-colors relative"
-                            style={{ background: '#FFF8E7' }}
-                            title="Notifikasi"
-                        >
-                            <Bell size={15} />
-                            <span
-                                className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full border-2 border-white"
-                                style={{ background: '#EF6C4A' }}
-                            />
-                        </button>
 
                         {/* User Profile Dropdown */}
                         <div className="relative">
@@ -382,52 +282,37 @@ export default function AppLayout({ children, title }) {
 
                             <button
                                 onClick={() => setSwitcherOpen(!switcherOpen)}
-                                className="flex items-center gap-2.5 hover:bg-teal/5 px-2.5 py-1 rounded-full border border-border select-none cursor-pointer transition-colors text-left relative z-50"
-                                style={{ background: '#FAFFFE' }}
+                                className="flex items-center gap-2.5 hover:bg-dark-surface pl-3 pr-2 py-1.5 rounded-md border border-transparent hover:border-border select-none cursor-pointer transition-colors text-left relative z-50"
                             >
                                 <div className="hidden sm:block text-right">
-                                    <p className="text-xs font-bold text-text-primary leading-none truncate max-w-[110px]" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                                    <p className="text-xs font-semibold text-text-primary leading-none truncate max-w-[140px]">
                                         {user?.name}
                                     </p>
-                                    <p className="text-[10px] text-text-secondary mt-0.5 leading-none">{roleLabel}</p>
+                                    <p className="text-2xs text-text-secondary mt-0.5 leading-none">{roleLabel}</p>
                                 </div>
-                                {/* Avatar */}
-                                <div
-                                    className="w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-xs text-white flex-shrink-0"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #2BA8A2 0%, #1E8C86 100%)',
-                                        boxShadow: '0 2px 8px rgba(43,168,162,0.40)',
-                                        fontFamily: 'Outfit, sans-serif',
-                                    }}
-                                >
+                                <div className="w-7 h-7 rounded-full bg-teal flex items-center justify-center font-semibold text-xs text-white flex-shrink-0">
                                     {initials}
                                 </div>
                             </button>
 
                             {/* Dropdown */}
                             {switcherOpen && (
-                                <div
-                                    className="absolute right-0 mt-2 w-52 py-1 px-1 flex flex-col z-50 rounded-xl overflow-hidden border border-border animate-slide-up"
-                                    style={{
-                                        background: 'white',
-                                        boxShadow: '0 12px 40px rgba(43,168,162,0.15), 0 2px 8px rgba(0,0,0,0.06)',
-                                    }}
-                                >
-                                    <div className="px-3 py-2.5 mb-1" style={{ borderBottom: '2px dashed rgba(43,168,162,0.20)' }}>
-                                        <p className="text-xs font-extrabold text-text-primary truncate" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                                <div className="absolute right-0 mt-2 w-56 py-1 flex flex-col z-50 rounded-md border border-border bg-white shadow-modal animate-slide-up">
+                                    <div className="px-3 py-2.5 mb-1 border-b border-border">
+                                        <p className="text-xs font-semibold text-text-primary truncate">
                                             {user?.name}
                                         </p>
-                                        <p className="text-[10px] text-text-secondary truncate mt-0.5">{user?.email}</p>
+                                        <p className="text-2xs text-text-secondary truncate mt-0.5">{user?.email}</p>
                                     </div>
                                     <Link
                                         href="/logout"
                                         method="post"
                                         as="button"
-                                        className="flex items-center gap-2 px-3 py-2 text-xs text-coral/80 hover:text-coral hover:bg-coral/10 rounded-lg transition-colors text-left w-full cursor-pointer font-medium"
+                                        className="flex items-center gap-2 px-3 py-2 text-xs text-error hover:bg-error/10 rounded-sm transition-colors text-left w-full cursor-pointer font-medium"
                                         onClick={() => setSwitcherOpen(false)}
                                     >
                                         <LogOut size={13} />
-                                        <span>Keluar / Logout</span>
+                                        <span>Keluar</span>
                                     </Link>
                                 </div>
                             )}
@@ -445,40 +330,68 @@ export default function AppLayout({ children, title }) {
 
             {/* Help Modal */}
             {helpModalOpen && (
-                <ModalBackdrop onClose={() => setHelpModalOpen(false)}>
-                    <ModalCard className="max-w-md w-full">
-                        <ModalHeader icon={HelpCircle} title="Bantuan & Informasi" onClose={() => setHelpModalOpen(false)} />
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-slide-up">
+                    <div onClick={() => setHelpModalOpen(false)} className="absolute inset-0" />
+                    <div className="relative z-10 card-surface shadow-modal max-w-md w-full max-h-[85vh] overflow-y-auto">
+                        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+                            <h3 className="text-sm font-semibold text-text-primary flex items-center gap-2 font-display">
+                                <HelpCircle size={16} className="text-teal" />
+                                Bantuan & Informasi
+                            </h3>
+                            <button
+                                onClick={() => setHelpModalOpen(false)}
+                                className="w-7 h-7 rounded-md flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-dark-surface transition-colors cursor-pointer"
+                            >
+                                <X size={14} />
+                            </button>
+                        </div>
                         <div className="p-5 space-y-4 text-xs text-text-secondary">
                             <div>
-                                <h4 className="font-extrabold text-text-primary mb-1.5" style={{ fontFamily: 'Outfit, sans-serif' }}>Tentang BHP Lab</h4>
+                                <h4 className="font-semibold text-text-primary mb-1.5 text-xs">Tentang BHP Lab</h4>
                                 <p className="leading-relaxed">
                                     Sistem Informasi Bahan Habis Pakai (BHP) Politeknik Negeri Cilacap membantu mahasiswa, laboran (admin), dan ketua jurusan mendokumentasikan pemakaian bahan secara akurat dan transparan.
                                 </p>
                             </div>
                             <div>
-                                <h4 className="font-extrabold text-text-primary mb-1.5" style={{ fontFamily: 'Outfit, sans-serif' }}>Panduan Alur BHP</h4>
+                                <h4 className="font-semibold text-text-primary mb-1.5 text-xs">Panduan Alur BHP</h4>
                                 <p className="leading-relaxed">
-                                    Mahasiswa mengajukan bahan melalui katalog. Admin menyetujui (<span className="text-teal font-semibold">Approved</span>) dan memotong stok setelah bahan diserahkan secara fisik (<span className="text-success font-semibold">Completed</span>).
+                                    Mahasiswa mengajukan bahan melalui katalog. Admin menyetujui (<span className="text-teal font-medium">Approved</span>) dan memotong stok setelah bahan diserahkan secara fisik (<span className="text-success font-medium">Completed</span>).
                                 </p>
                             </div>
                             <div>
-                                <h4 className="font-extrabold text-text-primary mb-1.5" style={{ fontFamily: 'Outfit, sans-serif' }}>Hubungi Administrator</h4>
+                                <h4 className="font-semibold text-text-primary mb-1.5 text-xs">Hubungi Administrator</h4>
                                 <p className="leading-relaxed">
-                                    Email: <span className="text-text-primary font-semibold">admin@lab.ac.id</span><br />
+                                    Email: <span className="text-text-primary font-medium">admin@lab.ac.id</span><br />
                                     Kunjungi Unit Laboratorium TPPL PNC untuk info lebih lanjut.
                                 </p>
                             </div>
                         </div>
-                        <ModalFooter onClose={() => setHelpModalOpen(false)} />
-                    </ModalCard>
-                </ModalBackdrop>
+                        <div className="px-5 py-3 border-t border-border flex justify-end">
+                            <button onClick={() => setHelpModalOpen(false)} className="btn-primary btn-sm cursor-pointer">
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
 
             {/* Keyboard Shortcuts Modal */}
             {shortcutsModalOpen && (
-                <ModalBackdrop onClose={() => setShortcutsModalOpen(false)}>
-                    <ModalCard className="max-w-sm w-full">
-                        <ModalHeader icon={Keyboard} title="Pintasan Keyboard" onClose={() => setShortcutsModalOpen(false)} />
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-slide-up">
+                    <div onClick={() => setShortcutsModalOpen(false)} className="absolute inset-0" />
+                    <div className="relative z-10 card-surface shadow-modal max-w-sm w-full max-h-[85vh] overflow-y-auto">
+                        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+                            <h3 className="text-sm font-semibold text-text-primary flex items-center gap-2 font-display">
+                                <Keyboard size={16} className="text-teal" />
+                                Pintasan Keyboard
+                            </h3>
+                            <button
+                                onClick={() => setShortcutsModalOpen(false)}
+                                className="w-7 h-7 rounded-md flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-dark-surface transition-colors cursor-pointer"
+                            >
+                                <X size={14} />
+                            </button>
+                        </div>
                         <div className="p-5 space-y-3 text-xs text-text-secondary">
                             <p className="leading-relaxed">Gunakan tombol keyboard berikut di luar input form untuk navigasi cepat:</p>
                             <div className="space-y-2">
@@ -492,15 +405,15 @@ export default function AppLayout({ children, title }) {
                                         <span>{item.label}</span>
                                         <div className="flex items-center gap-1">
                                             {item.keys.map((k, ki) => (
-                                                <>
-                                                    <kbd key={k} className="kbd-hint">{k}</kbd>
-                                                    {ki < item.keys.length - 1 && <span key={`sep-${ki}`} className="text-text-secondary/50">→</span>}
-                                                </>
+                                                <span key={k} className="flex items-center gap-1">
+                                                    <kbd className="kbd-hint">{k}</kbd>
+                                                    {ki < item.keys.length - 1 && <span className="text-text-secondary/50">→</span>}
+                                                </span>
                                             ))}
                                         </div>
                                     </div>
                                 ))}
-                                <div className="flex items-center justify-between pt-2" style={{ borderTop: '2px dashed rgba(43,168,162,0.20)' }}>
+                                <div className="flex items-center justify-between pt-2 border-t border-border">
                                     <span>Buka Pintasan Ini</span>
                                     <kbd className="kbd-hint">?</kbd>
                                 </div>
@@ -510,9 +423,13 @@ export default function AppLayout({ children, title }) {
                                 </div>
                             </div>
                         </div>
-                        <ModalFooter onClose={() => setShortcutsModalOpen(false)} />
-                    </ModalCard>
-                </ModalBackdrop>
+                        <div className="px-5 py-3 border-t border-border flex justify-end">
+                            <button onClick={() => setShortcutsModalOpen(false)} className="btn-primary btn-sm cursor-pointer">
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
 
         </div>

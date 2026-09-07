@@ -3,16 +3,16 @@ import { Head, usePage, Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import {
     FlaskConical, Users, Clock, AlertTriangle, ArrowRight,
-    BarChart3, Check, ClipboardList, PackagePlus, TrendingUp
+    BarChart3, Check, ClipboardList, PackagePlus
 } from 'lucide-react';
 
-/* ── Design token helpers (Flip7 colors) ─────────────── */
+/* ── Accent tokens ────────────────────────────────────── */
 const ACCENT = {
-    teal:  { bg: 'rgba(43,168,162,0.10)',  text: '#2BA8A2', border: 'rgba(43,168,162,0.25)', glow: 'rgba(43,168,162,0.25)', bar: '#2BA8A2' },
-    gold:  { bg: 'rgba(255,210,63,0.12)',  text: '#E6B800', border: 'rgba(255,210,63,0.30)', glow: 'rgba(255,210,63,0.30)', bar: '#FFD23F' },
-    coral: { bg: 'rgba(239,108,74,0.10)',  text: '#EF6C4A', border: 'rgba(239,108,74,0.25)', glow: 'rgba(239,108,74,0.30)', bar: '#EF6C4A' },
-    sky:   { bg: 'rgba(93,173,226,0.10)',  text: '#5DADE2', border: 'rgba(93,173,226,0.25)', glow: 'rgba(93,173,226,0.25)', bar: '#5DADE2' },
-    success:{ bg: 'rgba(39,174,96,0.10)', text: '#27AE60', border: 'rgba(39,174,96,0.25)',  glow: 'rgba(39,174,96,0.20)',  bar: '#27AE60' },
+    teal:   { bg: 'bg-teal/10',   text: 'text-teal',   bar: '#0F766E' },
+    gold:   { bg: 'bg-gold/10',   text: 'text-gold',   bar: '#B45309' },
+    coral:  { bg: 'bg-error/10',  text: 'text-error',  bar: '#DC2626' },
+    sky:    { bg: 'bg-sky/10',    text: 'text-sky',    bar: '#0369A1' },
+    success:{ bg: 'bg-success/10',text: 'text-success',bar: '#16A34A' },
 };
 
 // Legacy map so existing code passes color="violet" / color="success" etc.
@@ -28,115 +28,35 @@ const COLOR_MAP = {
 };
 
 /* ── Stat Card ────────────────────────────────────────── */
-function StatCard({ label, value, icon: Icon, trend, trendType = 'up', color = 'teal', footerType, pulse }) {
+function StatCard({ label, value, icon: Icon, color = 'teal', footerType, pulse }) {
     const c = COLOR_MAP[color] || ACCENT.teal;
 
-    const trendStyle = trendType === 'up'
-        ? { background: 'rgba(39,174,96,0.12)', color: '#27AE60', border: '1px solid rgba(39,174,96,0.25)' }
-        : trendType === 'down'
-        ? { background: 'rgba(239,108,74,0.12)', color: '#EF6C4A', border: '1px solid rgba(239,108,74,0.25)' }
-        : { background: 'rgba(90,138,134,0.10)', color: '#5A8A86',  border: '1px solid rgba(90,138,134,0.20)' };
-
     return (
-        <div
-            className={`relative overflow-hidden rounded-xl bg-white flex flex-col justify-between min-h-[150px] transition-all duration-300 hover:-translate-y-0.5 ${pulse ? 'animate-glow-pulse' : ''}`}
-            style={{
-                borderTop: `1px solid ${c.border}`,
-                borderRight: `1px solid ${c.border}`,
-                borderBottom: `1px solid ${c.border}`,
-                borderLeft: `6px solid ${c.bar}`,
-                boxShadow: `0 4px 20px ${c.glow}, 0 1px 4px rgba(0,0,0,0.04)`,
-            }}
-        >
-            {/* Top glow decoration */}
-            <div
-                className="absolute top-0 right-0 w-32 h-32 rounded-full pointer-events-none"
-                style={{ background: c.bg, transform: 'translate(30%, -30%)', filter: 'blur(20px)' }}
-            />
-
-            <div className="p-5 relative">
-                <div className="flex justify-between items-start gap-4">
-                    <div className="min-w-0 flex-1">
-                        <p className="text-2xs font-bold uppercase tracking-widest leading-none mb-2" style={{ color: '#5A8A86', letterSpacing: '0.12em' }}>
-                            {label}
-                        </p>
-                        <div className="flex items-end gap-2 mt-2">
-                            <span className="text-3xl font-extrabold leading-none" style={{ color: '#0D3B38', fontFamily: 'Outfit, sans-serif' }}>
-                                {value ?? 0}
-                            </span>
-                            {trend && (
-                                <span
-                                    className="text-[10px] font-bold px-2 py-0.5 rounded-full mb-0.5"
-                                    style={trendStyle}
-                                >
-                                    {trend}
-                                </span>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Icon Badge */}
-                    <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 hover:scale-110"
-                        style={{
-                            background: c.bg,
-                            border: `1.5px solid ${c.border}`,
-                            boxShadow: `0 4px 12px ${c.glow}`,
-                        }}
-                    >
-                        <Icon size={22} strokeWidth={2.5} style={{ color: c.text }} />
-                    </div>
+        <div className="card p-5 flex flex-col justify-between min-h-[130px]">
+            <div className="flex justify-between items-start gap-4">
+                <div className="min-w-0 flex-1">
+                    <p className="section-header leading-none mb-2.5">
+                        {label}
+                    </p>
+                    <span className="text-3xl font-bold text-text-primary leading-none tracking-tight font-display">
+                        {value ?? 0}
+                    </span>
                 </div>
 
-                {/* Footer sparklines / indicators */}
-                <div className="mt-4 pt-3" style={{ borderTop: '1px dashed rgba(43,168,162,0.20)' }}>
-                    {footerType === 'bar' && (
-                        <div className="flex items-end gap-1 h-5 select-none w-full">
-                            {[2,3,2,4,5,7].map((h, i) => (
-                                <div
-                                    key={i}
-                                    className="flex-1 rounded-sm transition-all duration-300"
-                                    style={{
-                                        height: `${h * 3}px`,
-                                        background: i === 5 ? c.bar : `${c.bar}40`,
-                                    }}
-                                />
-                            ))}
-                        </div>
-                    )}
-                    {footerType === 'sparkline-green' && (
-                        <div className="h-5 select-none w-full">
-                            <svg className="w-full h-full" viewBox="0 0 100 30" fill="none" preserveAspectRatio="none">
-                                <path d="M0 25 C 20 5, 40 35, 60 10 C 80 -5, 90 20, 100 8"
-                                    stroke="#27AE60" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </div>
-                    )}
-                    {footerType === 'sparkline-yellow' && (
-                        <div className="h-5 select-none w-full">
-                            <svg className="w-full h-full" viewBox="0 0 100 30" fill="none" preserveAspectRatio="none">
-                                <path d="M0 10 C 15 25, 30 5, 45 20 C 60 30, 75 10, 100 25"
-                                    stroke="#FFD23F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </div>
-                    )}
-                    {footerType === 'status-kritis' && (
-                        <div className="flex items-center gap-2 select-none w-full">
-                            <span
-                                className="w-2 h-2 rounded-full"
-                                style={{
-                                    background: value > 0 ? '#EF6C4A' : '#27AE60',
-                                    boxShadow: value > 0 ? '0 0 6px rgba(239,108,74,0.60)' : '0 0 6px rgba(39,174,96,0.60)',
-                                    animation: value > 0 ? 'coral-pulse-shadow 1.5s ease-in-out infinite' : 'none',
-                                }}
-                            />
-                            <span className="text-2xs font-bold font-mono tracking-widest text-text-secondary uppercase">
-                                {value > 0 ? 'PERLU TINDAKAN' : 'STATUS: AMAN'}
-                            </span>
-                        </div>
-                    )}
+                <div className={`w-11 h-11 rounded-md flex items-center justify-center flex-shrink-0 ${c.bg} ${c.text}`}>
+                    <Icon size={20} strokeWidth={2} />
                 </div>
             </div>
+
+            {/* Footer: critical stock indicator only (real data) */}
+            {footerType === 'status-kritis' && (
+                <div className="mt-4 pt-3 border-t border-border flex items-center gap-2">
+                    <span className={`w-1.5 h-1.5 rounded-full ${value > 0 ? 'bg-error' : 'bg-success'}`} />
+                    <span className="text-2xs font-medium text-text-secondary uppercase tracking-wider">
+                        {value > 0 ? 'Perlu tindakan' : 'Status: aman'}
+                    </span>
+                </div>
+            )}
         </div>
     );
 }
@@ -144,30 +64,25 @@ function StatCard({ label, value, icon: Icon, trend, trendType = 'up', color = '
 /* ── Status Chip ──────────────────────────────────────── */
 function StatusChip({ status }) {
     const map = {
-        pending_review: { label: 'Pending',  style: { background: 'rgba(255,210,63,0.18)', color: '#0D3B38', border: '1px solid rgba(230,184,0,0.35)' } },
-        approved:       { label: 'Approved', style: { background: 'rgba(43,168,162,0.12)', color: '#2BA8A2', border: '1px solid rgba(43,168,162,0.30)' } },
-        completed:      { label: 'Selesai',  style: { background: 'rgba(39,174,96,0.12)',  color: '#27AE60', border: '1px solid rgba(39,174,96,0.30)' } },
-        rejected:       { label: 'Ditolak',  style: { background: 'rgba(239,108,74,0.12)', color: '#EF6C4A', border: '1px solid rgba(239,108,74,0.30)' } },
+        pending_review: { label: 'Pending',  cls: 'bg-warning/10 text-warning' },
+        approved:       { label: 'Approved', cls: 'bg-teal/10 text-teal' },
+        completed:      { label: 'Selesai',  cls: 'bg-success/10 text-success' },
+        rejected:       { label: 'Ditolak',  cls: 'bg-error/10 text-error' },
     };
-    const s = map[status] ?? { label: status, style: { background: 'rgba(90,138,134,0.10)', color: '#5A8A86', border: '1px solid rgba(90,138,134,0.20)' } };
+    const s = map[status] ?? { label: status, cls: 'bg-dark-surface text-text-secondary' };
     return (
-        <span
-            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide"
-            style={s.style}
-        >
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-2xs font-semibold ${s.cls}`}>
             {s.label}
         </span>
     );
 }
 
-/* ── Section Header (Flip7 dashed style) ─────────────── */
-function SectionTitle({ icon: Icon, title, iconColor = '#2BA8A2' }) {
+/* ── Section Header ───────────────────────────────────── */
+function SectionTitle({ icon: Icon, title, iconColor = 'text-teal' }) {
     return (
-        <div className="flex items-center gap-2 pb-2 mb-1" style={{ borderBottom: '2px dashed rgba(43,168,162,0.25)' }}>
-            <div className="w-6 h-6 flex items-center justify-center">
-                <Icon size={15} style={{ color: iconColor }} strokeWidth={2.5} />
-            </div>
-            <h2 className="text-sm font-extrabold text-text-primary" style={{ fontFamily: 'Outfit, sans-serif' }}>{title}</h2>
+        <div className="flex items-center gap-2">
+            <Icon size={15} className={iconColor} strokeWidth={2} />
+            <h2 className="text-sm font-semibold text-text-primary font-display">{title}</h2>
         </div>
     );
 }
@@ -180,26 +95,26 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
     const getStatsConfig = () => {
         if (role === 'admin') {
             return [
-                { label: 'Total Bahan',       value: stats?.total_bahan,    icon: FlaskConical,   color: 'teal',    trend: '+12%',                                                 trendType: 'up',      footerType: 'bar' },
-                { label: 'Mahasiswa Aktif',    value: stats?.total_user,     icon: Users,          color: 'success', trend: '+8%',                                                  trendType: 'up',      footerType: 'sparkline-green' },
-                { label: 'Menunggu Review',    value: stats?.pending_review, icon: Clock,          color: 'gold',    trend: stats?.pending_review > 0 ? `${stats.pending_review} pending` : 'Aman', trendType: stats?.pending_review > 0 ? 'down' : 'up', footerType: 'sparkline-yellow' },
-                { label: 'Stok Kritis',        value: stats?.stok_kritis,    icon: AlertTriangle,  color: 'coral',   trend: stats?.stok_kritis > 0 ? `${stats.stok_kritis} item` : 'Aman',     trendType: stats?.stok_kritis > 0 ? 'down' : 'up',    footerType: 'status-kritis', pulse: stats?.stok_kritis > 0 },
+                { label: 'Total Bahan',        value: stats?.total_bahan,    icon: FlaskConical,  color: 'teal' },
+                { label: 'Mahasiswa Aktif',    value: stats?.total_user,     icon: Users,         color: 'success' },
+                { label: 'Menunggu Review',    value: stats?.pending_review, icon: Clock,         color: 'gold' },
+                { label: 'Stok Kritis',        value: stats?.stok_kritis,    icon: AlertTriangle, color: 'coral', footerType: 'status-kritis' },
             ];
         }
         if (role === 'mahasiswa') {
             return [
-                { label: 'Total Pengajuan',   value: stats?.total_pengajuan, icon: ClipboardList,  color: 'teal',    trend: 'Riwayat',  trendType: 'up',      footerType: 'bar' },
-                { label: 'Menunggu Review',   value: stats?.pending_review,  icon: Clock,          color: 'gold',    trend: 'Proses',   trendType: 'neutral', footerType: 'sparkline-yellow' },
-                { label: 'Disetujui',         value: stats?.approved,        icon: Check,          color: 'success', trend: 'Approved', trendType: 'up',      footerType: 'sparkline-green' },
-                { label: 'Selesai',           value: stats?.completed,       icon: FlaskConical,   color: 'teal',    trend: 'Selesai',  trendType: 'up',      footerType: 'bar' },
+                { label: 'Total Pengajuan',  value: stats?.total_pengajuan, icon: ClipboardList, color: 'teal' },
+                { label: 'Menunggu Review',  value: stats?.pending_review,  icon: Clock,         color: 'gold' },
+                { label: 'Disetujui',        value: stats?.approved,        icon: Check,         color: 'success' },
+                { label: 'Selesai',          value: stats?.completed,       icon: FlaskConical,  color: 'sky' },
             ];
         }
         if (role === 'ketua_jurusan') {
             return [
-                { label: 'Total Transaksi',   value: stats?.total_transaksi, icon: ClipboardList,  color: 'teal',    trend: '+15%',                                                       trendType: 'up',      footerType: 'bar' },
-                { label: 'Total Bahan',       value: stats?.total_bahan,     icon: FlaskConical,   color: 'success', trend: 'Aktif',                                                      trendType: 'up',      footerType: 'sparkline-green' },
-                { label: 'Stok Kritis',       value: stats?.stok_kritis,     icon: AlertTriangle,  color: 'coral',   trend: stats?.stok_kritis > 0 ? 'Perlu Order' : 'Aman',              trendType: stats?.stok_kritis > 0 ? 'down' : 'up',    footerType: 'status-kritis', pulse: stats?.stok_kritis > 0 },
-                { label: 'Pending Belanja',   value: stats?.pending_belanja, icon: PackagePlus,    color: 'gold',    trend: stats?.pending_belanja > 0 ? 'Review' : 'Selesai',             trendType: stats?.pending_belanja > 0 ? 'down' : 'up',footerType: 'sparkline-yellow' },
+                { label: 'Total Transaksi', value: stats?.total_transaksi, icon: ClipboardList,  color: 'teal' },
+                { label: 'Total Bahan',     value: stats?.total_bahan,     icon: FlaskConical,   color: 'success' },
+                { label: 'Stok Kritis',     value: stats?.stok_kritis,     icon: AlertTriangle,  color: 'coral', footerType: 'status-kritis' },
+                { label: 'Pending Belanja', value: stats?.pending_belanja, icon: PackagePlus,    color: 'gold' },
             ];
         }
         return [];
@@ -256,37 +171,16 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
     return (
         <AppLayout title="Dashboard">
             <Head title="Dashboard" />
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 max-w-7xl mx-auto">
 
-                {/* Greeting Banner */}
-                <div
-                    className="rounded-xl px-6 py-5 flex items-center justify-between overflow-hidden relative"
-                    style={{
-                        background: 'linear-gradient(135deg, #2BA8A2 0%, #1E8C86 50%, #3CC4BD 100%)',
-                        boxShadow: '0 8px 32px rgba(43,168,162,0.30)',
-                    }}
-                >
-                    {/* Decorative circles */}
-                    <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full" style={{ background: 'rgba(255,255,255,0.07)' }} />
-                    <div className="absolute right-16 bottom-0 w-20 h-20 rounded-full" style={{ background: 'rgba(255,210,63,0.12)' }} />
-
-                    <div className="relative z-10">
-                        <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">
-                            Sistem Informasi BHP
-                        </p>
-                        <h1 className="text-white text-2xl font-extrabold leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                            Selamat datang 👋
-                        </h1>
-                        <p className="text-white/80 text-xs mt-1">
-                            Politeknik Negeri Cilacap — Lab TPPL
-                        </p>
-                    </div>
-                    <div
-                        className="hidden sm:flex w-12 h-12 rounded-xl items-center justify-center flex-shrink-0 relative z-10"
-                        style={{ background: 'rgba(255,210,63,0.25)', border: '1.5px solid rgba(255,210,63,0.40)' }}
-                    >
-                        <FlaskConical size={24} className="text-white" strokeWidth={2} />
-                    </div>
+                {/* Page heading */}
+                <div>
+                    <h1 className="text-xl font-semibold text-text-primary font-display">
+                        Selamat datang, {auth?.user?.name?.split(' ')[0]}
+                    </h1>
+                    <p className="text-xs text-text-secondary mt-1">
+                        Sistem Informasi BHP — Politeknik Negeri Cilacap, Lab TPPL
+                    </p>
                 </div>
 
                 {/* Main Layout */}
@@ -303,32 +197,18 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
                         </div>
 
                         {/* Chart Card */}
-                        <div
-                            className="bg-white rounded-xl p-5 overflow-hidden relative"
-                            style={{
-                                borderTop: '1px solid rgba(43,168,162,0.20)',
-                                borderRight: '1px solid rgba(43,168,162,0.20)',
-                                borderBottom: '1px solid rgba(43,168,162,0.20)',
-                                borderLeft: '6px solid #2BA8A2',
-                                boxShadow: '0 4px 20px rgba(43,168,162,0.10)',
-                            }}
-                        >
+                        <div className="card p-5">
                             <div className="flex items-center justify-between mb-5">
                                 <div>
-                                    <h2 className="text-sm font-extrabold text-text-primary" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                                    <h2 className="text-sm font-semibold text-text-primary font-display">
                                         Tren Penggunaan BHP
                                     </h2>
                                     <p className="text-2xs text-text-secondary mt-0.5">Jumlah transaksi selesai dalam 6 bulan terakhir</p>
                                 </div>
-                                <div className="flex items-center gap-2 text-2xs font-semibold text-text-secondary select-none">
-                                    <span
-                                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
-                                        style={{ background: 'rgba(43,168,162,0.10)', color: '#2BA8A2', border: '1px solid rgba(43,168,162,0.25)' }}
-                                    >
-                                        <TrendingUp size={10} strokeWidth={2.5} />
-                                        Transaksi Selesai
-                                    </span>
-                                </div>
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-2xs font-medium bg-teal/10 text-teal">
+                                    <TrendingUpPlaceholder />
+                                    Transaksi Selesai
+                                </span>
                             </div>
 
                             <div className="relative w-full select-none">
@@ -337,8 +217,8 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
                                         <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-auto overflow-visible">
                                             <defs>
                                                 <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="0%"   stopColor="#2BA8A2" stopOpacity="0.30" />
-                                                    <stop offset="100%" stopColor="#2BA8A2" stopOpacity="0.00" />
+                                                    <stop offset="0%"   stopColor="#0F766E" stopOpacity="0.15" />
+                                                    <stop offset="100%" stopColor="#0F766E" stopOpacity="0.00" />
                                                 </linearGradient>
                                             </defs>
 
@@ -348,9 +228,9 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
                                                 return (
                                                     <g key={idx}>
                                                         <line x1={paddingLeft} y1={tickY} x2={svgWidth - paddingRight} y2={tickY}
-                                                            stroke="rgba(43,168,162,0.15)" strokeWidth="1" strokeDasharray="4 4" />
+                                                            stroke="#E2E8F0" strokeWidth="1" />
                                                         <text x={paddingLeft - 10} y={tickY + 3.5} textAnchor="end"
-                                                            fill="#5A8A86" fontSize="10" fontWeight="600">
+                                                            fill="#64748B" fontSize="10" fontWeight="500">
                                                             {tickVal}
                                                         </text>
                                                     </g>
@@ -362,14 +242,14 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
 
                                             {/* Line */}
                                             {linePath && (
-                                                <path d={linePath} fill="none" stroke="#2BA8A2" strokeWidth="3"
+                                                <path d={linePath} fill="none" stroke="#0F766E" strokeWidth="2"
                                                     strokeLinecap="round" strokeLinejoin="round" />
                                             )}
 
                                             {/* X-axis labels */}
                                             {points.map((pt, i) => (
                                                 <text key={i} x={pt.x} y={svgHeight - 4} textAnchor="middle"
-                                                    fill="#5A8A86" fontSize="10" fontWeight="600">
+                                                    fill="#64748B" fontSize="10" fontWeight="500">
                                                     {pt.label}
                                                 </text>
                                             ))}
@@ -377,13 +257,13 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
                                             {/* Active vertical line */}
                                             {activePoint && (
                                                 <line x1={activePoint.x} y1={paddingTop} x2={activePoint.x} y2={paddingTop + height}
-                                                    stroke="rgba(43,168,162,0.30)" strokeWidth="1.5" strokeDasharray="4 4" />
+                                                    stroke="#CBD5E1" strokeWidth="1" strokeDasharray="4 4" />
                                             )}
 
                                             {/* Active dot */}
                                             {activePoint && (
-                                                <circle cx={activePoint.x} cy={activePoint.y} r="6"
-                                                    fill="#FFFFFF" stroke="#2BA8A2" strokeWidth="3.5" />
+                                                <circle cx={activePoint.x} cy={activePoint.y} r="5"
+                                                    fill="#FFFFFF" stroke="#0F766E" strokeWidth="2.5" />
                                             )}
 
                                             {/* Hover rects */}
@@ -409,25 +289,14 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
                                                     transform: 'translate(-50%, -120%)',
                                                 }}
                                             >
-                                                <div
-                                                    className="px-3 py-1.5 rounded-xl text-center flex flex-col gap-0.5 min-w-[80px]"
-                                                    style={{
-                                                        background: '#0D3B38',
-                                                        boxShadow: '0 4px 16px rgba(13,59,56,0.30)',
-                                                        border: '1px solid rgba(255,255,255,0.10)',
-                                                    }}
-                                                >
-                                                    <span className="text-[9px] font-semibold" style={{ color: 'rgba(255,255,255,0.60)' }}>
+                                                <div className="px-3 py-1.5 rounded-md text-center flex flex-col gap-0.5 min-w-[80px] bg-slate-900 shadow-modal">
+                                                    <span className="text-[9px] font-medium text-slate-400">
                                                         {activePoint.label}
                                                     </span>
-                                                    <span className="text-xs font-extrabold text-white font-mono">
-                                                        {activePoint.val} <span className="text-[9px] font-normal" style={{ color: 'rgba(255,255,255,0.60)' }}>Tx</span>
+                                                    <span className="text-xs font-semibold text-white font-mono">
+                                                        {activePoint.val} <span className="text-[9px] font-normal text-slate-400">Tx</span>
                                                     </span>
                                                 </div>
-                                                <div
-                                                    className="w-2.5 h-2.5 mx-auto -mt-1.5 rotate-45"
-                                                    style={{ background: '#0D3B38' }}
-                                                />
                                             </div>
                                         )}
                                     </div>
@@ -439,17 +308,11 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
 
                                 {/* Empty state overlay */}
                                 {!hasData && labels.length > 0 && (
-                                    <div
-                                        className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 select-none rounded-lg"
-                                        style={{ background: 'rgba(239,248,247,0.85)', backdropFilter: 'blur(2px)' }}
-                                    >
-                                        <div
-                                            className="w-10 h-10 rounded-full flex items-center justify-center mb-2"
-                                            style={{ background: 'rgba(43,168,162,0.12)', boxShadow: '0 4px 12px rgba(43,168,162,0.20)' }}
-                                        >
-                                            <BarChart3 size={20} style={{ color: '#2BA8A2' }} />
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 select-none rounded-lg bg-white/85">
+                                        <div className="w-10 h-10 rounded-full flex items-center justify-center mb-2 bg-teal/10">
+                                            <BarChart3 size={20} className="text-teal" />
                                         </div>
-                                        <p className="text-xs font-extrabold text-text-primary" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                                        <p className="text-xs font-semibold text-text-primary">
                                             Belum Ada Riwayat Transaksi
                                         </p>
                                         <p className="text-2xs text-text-secondary mt-0.5">Sistem belum mencatat transaksi selesai dalam 6 bulan terakhir</p>
@@ -464,36 +327,30 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
 
                         {/* Admin: Recent Transactions */}
                         {role === 'admin' && (
-                            <div
-                                className="bg-white rounded-xl overflow-hidden"
-                                style={{ border: '1px solid rgba(43,168,162,0.20)', boxShadow: '0 4px 20px rgba(43,168,162,0.08)' }}
-                            >
-                                <div className="px-5 pt-4 pb-3">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <SectionTitle icon={Clock} title="Transaksi Terbaru" />
-                                        <Link
-                                            href="/admin/pengajuan"
-                                            className="text-xs font-bold flex items-center gap-1 transition-colors hover:gap-1.5"
-                                            style={{ color: '#2BA8A2' }}
-                                        >
-                                            Semua <ArrowRight size={11} />
-                                        </Link>
-                                    </div>
+                            <div className="card overflow-hidden">
+                                <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+                                    <SectionTitle icon={Clock} title="Transaksi Terbaru" />
+                                    <Link
+                                        href="/admin/pengajuan"
+                                        className="text-xs font-medium flex items-center gap-1 text-teal hover:text-teal-dark transition-colors"
+                                    >
+                                        Semua <ArrowRight size={11} />
+                                    </Link>
                                 </div>
-                                <div className="divide-y" style={{ borderColor: 'rgba(43,168,162,0.12)' }}>
+                                <div className="divide-y divide-border">
                                     {recentPengajuan?.length > 0 ? (
                                         recentPengajuan.slice(0, 5).map(p => (
                                             <Link
                                                 key={p.id}
                                                 href={`/admin/pengajuan/${p.id}`}
-                                                className="block px-5 py-3 hover:bg-teal/5 transition-colors"
+                                                className="block px-5 py-3 hover:bg-dark-surface/50 transition-colors"
                                             >
                                                 <div className="flex items-start justify-between gap-3">
                                                     <div className="min-w-0 flex-1">
-                                                        <p className="text-xs font-bold font-mono mb-0.5" style={{ color: '#2BA8A2' }}>
+                                                        <p className="text-xs font-medium font-mono mb-0.5 text-teal">
                                                             {p.kode_pengajuan}
                                                         </p>
-                                                        <p className="text-sm font-semibold text-text-primary truncate">{p.user?.name}</p>
+                                                        <p className="text-sm font-medium text-text-primary truncate">{p.user?.name}</p>
                                                         <p className="text-xs text-text-secondary truncate mt-0.5">{p.mata_kuliah || 'Mandiri'}</p>
                                                     </div>
                                                     <StatusChip status={p.status} />
@@ -511,45 +368,29 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
 
                         {/* Admin: Stok Kritis */}
                         {role === 'admin' && (
-                            <div
-                                className="bg-white rounded-xl overflow-hidden"
-                                style={{
-                                    borderLeft: '6px solid #EF6C4A',
-                                    border: '1px solid rgba(239,108,74,0.20)',
-                                    boxShadow: '0 4px 20px rgba(239,108,74,0.10)',
-                                }}
-                            >
-                                <div className="px-5 pt-4 pb-3">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <SectionTitle icon={AlertTriangle} title="Stok Kritis" iconColor="#EF6C4A" />
-                                        <Link href="/admin/bahan" className="text-xs font-bold flex items-center gap-1" style={{ color: '#EF6C4A' }}>
-                                            Semua <ArrowRight size={11} />
-                                        </Link>
-                                    </div>
+                            <div className="card overflow-hidden">
+                                <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+                                    <SectionTitle icon={AlertTriangle} title="Stok Kritis" iconColor="text-error" />
+                                    <Link href="/admin/bahan" className="text-xs font-medium flex items-center gap-1 text-teal hover:text-teal-dark transition-colors">
+                                        Semua <ArrowRight size={11} />
+                                    </Link>
                                 </div>
-                                <div className="divide-y" style={{ borderColor: 'rgba(239,108,74,0.12)' }}>
+                                <div className="divide-y divide-border">
                                     {stokKritis?.length > 0 ? (
                                         stokKritis.slice(0, 5).map(b => (
-                                            <div key={b.id} className="flex items-center justify-between px-5 py-2.5 hover:bg-coral/5 transition-colors">
+                                            <div key={b.id} className="flex items-center justify-between px-5 py-2.5">
                                                 <div className="min-w-0 flex-1">
-                                                    <p className="text-sm font-semibold text-text-primary truncate">{b.nama_bahan}</p>
+                                                    <p className="text-sm font-medium text-text-primary truncate">{b.nama_bahan}</p>
                                                     <p className="text-xs text-text-secondary">Min: {b.minimal_stok} {b.satuan?.nama}</p>
                                                 </div>
-                                                <span
-                                                    className="text-sm font-extrabold ml-3 px-2.5 py-0.5 rounded-full"
-                                                    style={{
-                                                        color: '#EF6C4A',
-                                                        background: 'rgba(239,108,74,0.10)',
-                                                        fontFamily: 'Outfit, sans-serif',
-                                                    }}
-                                                >
+                                                <span className="text-sm font-semibold ml-3 text-error">
                                                     {b.stok}
                                                 </span>
                                             </div>
                                         ))
                                     ) : (
                                         <div className="px-5 py-8 text-center text-xs text-text-secondary">
-                                            Semua stok bahan dalam kondisi aman. ✅
+                                            Semua stok bahan dalam kondisi aman.
                                         </div>
                                     )}
                                 </div>
@@ -558,50 +399,31 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
 
                         {/* Ketua Jurusan: Top Bahan */}
                         {role === 'ketua_jurusan' && (
-                            <div
-                                className="bg-white rounded-xl overflow-hidden"
-                                style={{ border: '1px solid rgba(43,168,162,0.20)', boxShadow: '0 4px 20px rgba(43,168,162,0.08)' }}
-                            >
-                                <div className="px-5 pt-4 pb-3">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <SectionTitle icon={BarChart3} title="Bahan Terpopuler" />
-                                        <span
-                                            className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
-                                            style={{ background: 'rgba(43,168,162,0.10)', color: '#2BA8A2' }}
-                                        >
-                                            6 Bulan
-                                        </span>
-                                    </div>
+                            <div className="card overflow-hidden">
+                                <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+                                    <SectionTitle icon={BarChart3} title="Bahan Terpopuler" />
+                                    <span className="text-2xs font-medium uppercase tracking-wider text-text-secondary">
+                                        6 Bulan
+                                    </span>
                                 </div>
-                                <div className="divide-y" style={{ borderColor: 'rgba(43,168,162,0.12)' }}>
+                                <div className="divide-y divide-border">
                                     {topBahan?.length > 0 ? (
-                                        topBahan.slice(0, 5).map((tb, idx) => {
-                                            const rankColors = ['#FFD23F', '#C0C0C0', '#EF6C4A', '#2BA8A2', '#5DADE2'];
-                                            return (
-                                                <div key={tb.bahan_id} className="flex items-center justify-between px-5 py-2.5 hover:bg-teal/5 transition-colors">
-                                                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                                                        <span
-                                                            className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold flex-shrink-0"
-                                                            style={{
-                                                                background: `${rankColors[idx]}20`,
-                                                                color: rankColors[idx],
-                                                                border: `1.5px solid ${rankColors[idx]}40`,
-                                                                fontFamily: 'Outfit, sans-serif',
-                                                            }}
-                                                        >
-                                                            {idx + 1}
-                                                        </span>
-                                                        <div className="min-w-0 flex-1">
-                                                            <p className="text-sm font-semibold text-text-primary truncate">{tb.bahan?.nama_bahan || 'Tidak Diketahui'}</p>
-                                                            <p className="text-xs text-text-secondary truncate">{tb.bahan?.kode_bahan}</p>
-                                                        </div>
-                                                    </div>
-                                                    <span className="text-sm font-extrabold ml-3" style={{ color: '#2BA8A2', fontFamily: 'Outfit, sans-serif' }}>
-                                                        {tb.total_pakai}
+                                        topBahan.slice(0, 5).map((tb, idx) => (
+                                            <div key={tb.bahan_id} className="flex items-center justify-between px-5 py-2.5">
+                                                <div className="flex items-center gap-3 min-w-0 flex-1">
+                                                    <span className="w-6 h-6 rounded-full flex items-center justify-center text-2xs font-semibold flex-shrink-0 bg-dark-surface text-text-secondary">
+                                                        {idx + 1}
                                                     </span>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-sm font-medium text-text-primary truncate">{tb.bahan?.nama_bahan || 'Tidak Diketahui'}</p>
+                                                        <p className="text-xs text-text-secondary truncate">{tb.bahan?.kode_bahan}</p>
+                                                    </div>
                                                 </div>
-                                            );
-                                        })
+                                                <span className="text-sm font-semibold ml-3 text-text-primary">
+                                                    {tb.total_pakai}
+                                                </span>
+                                            </div>
+                                        ))
                                     ) : (
                                         <div className="px-5 py-8 text-center text-xs text-text-secondary">
                                             Belum ada data penggunaan bahan.
@@ -613,37 +435,33 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
 
                         {/* Mahasiswa: Recent Pengajuan */}
                         {role === 'mahasiswa' && (
-                            <div
-                                className="bg-white rounded-xl overflow-hidden"
-                                style={{ border: '1px solid rgba(43,168,162,0.20)', boxShadow: '0 4px 20px rgba(43,168,162,0.08)' }}
-                            >
-                                <div className="px-5 pt-4 pb-3">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <SectionTitle icon={ClipboardList} title="Pengajuan Terbaru" />
-                                        <Link
-                                            href="/mahasiswa/pengajuan"
-                                            className="text-xs font-bold flex items-center gap-1"
-                                            style={{ color: '#2BA8A2' }}
-                                        >
-                                            Semua <ArrowRight size={11} />
-                                        </Link>
-                                    </div>
+                            <div className="card overflow-hidden">
+                                <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+                                    <SectionTitle icon={ClipboardList} title="Pengajuan Terbaru" />
+                                    <Link
+                                        href="/mahasiswa/pengajuan"
+                                        className="text-xs font-medium flex items-center gap-1 text-teal hover:text-teal-dark transition-colors"
+                                    >
+                                        Semua <ArrowRight size={11} />
+                                    </Link>
                                 </div>
-                                <div className="divide-y" style={{ borderColor: 'rgba(43,168,162,0.12)' }}>
+                                <div className="divide-y divide-border">
                                     {recentPengajuan?.length > 0 ? (
                                         recentPengajuan.slice(0, 5).map(p => (
                                             <Link
                                                 key={p.id}
                                                 href={`/mahasiswa/pengajuan/${p.id}`}
-                                                className="block px-5 py-3 hover:bg-teal/5 transition-colors"
+                                                className="block px-5 py-3 hover:bg-dark-surface/50 transition-colors"
                                             >
                                                 <div className="flex items-start justify-between gap-3">
                                                     <div className="min-w-0 flex-1">
-                                                        <p className="text-xs font-bold font-mono mb-0.5" style={{ color: '#2BA8A2' }}>
+                                                        <p className="text-xs font-medium font-mono mb-0.5 text-teal">
                                                             {p.kode_pengajuan}
                                                         </p>
-                                                        <p className="text-sm font-semibold text-text-primary truncate">{p.mata_kuliah || 'Mandiri'}</p>
-                                                        <p className="text-xs text-text-secondary mt-0.5">{p.tanggal_pakai}</p>
+                                                        <p className="text-sm font-medium text-text-primary truncate">{p.mata_kuliah || 'Mandiri'}</p>
+                                                        <p className="text-xs text-text-secondary mt-0.5">
+                                                            {p.tanggal_pakai ? new Date(p.tanggal_pakai).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}
+                                                        </p>
                                                     </div>
                                                     <StatusChip status={p.status} />
                                                 </div>
@@ -662,5 +480,15 @@ export default function Dashboard({ stats, stokKritis, recentPengajuan, chartDat
 
             </div>
         </AppLayout>
+    );
+}
+
+/* Small inline icon for the chart legend */
+function TrendingUpPlaceholder() {
+    return (
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+            <polyline points="17 6 23 6 23 12" />
+        </svg>
     );
 }

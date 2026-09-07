@@ -9,72 +9,56 @@ export default {
     theme: {
         extend: {
             colors: {
-                // ── Flip7 Primary Teal ──────────────────────────────
+                // ── Brand: deep teal (WCAG-safe on white) ─────────────
                 teal: {
-                    DEFAULT: '#2BA8A2',
-                    light:   '#3CC4BD',
-                    dark:    '#1E8C86',
-                    bg:      '#E8F6F5',
-                    soft:    'rgba(43,168,162,0.10)',
-                    glow:    'rgba(43,168,162,0.30)',
+                    DEFAULT: '#0F766E',
+                    light:   '#0D9488',
+                    dark:    '#115E59',
+                    bg:      '#F0FDFA',
+                    soft:    'rgba(15,118,110,0.08)',
+                    glow:    'rgba(15,118,110,0.12)',
                 },
-                // Alias violet → teal so all existing `text-violet`, `bg-violet` classes
-                // automatically adopt the Flip7 primary without touching every file.
+                // Legacy alias — existing pages still use `violet-*` classes
                 violet: {
-                    DEFAULT:   '#2BA8A2',
-                    hover:     '#1E8C86',
-                    secondary: '#3CC4BD',
-                    soft:      'rgba(43,168,162,0.10)',
-                    glow:      'rgba(43,168,162,0.15)',
+                    DEFAULT:   '#0F766E',
+                    hover:     '#115E59',
+                    secondary: '#0D9488',
+                    soft:      'rgba(15,118,110,0.08)',
+                    glow:      'rgba(15,118,110,0.12)',
                 },
-                // ── Flip7 Accent Gold ────────────────────────────────
-                gold: {
-                    DEFAULT: '#FFD23F',
-                    light:   '#FFE47A',
-                    dark:    '#E6B800',
-                    glow:    'rgba(255,210,63,0.40)',
-                },
-                // ── Flip7 Coral ──────────────────────────────────────
-                coral: {
-                    DEFAULT: '#EF6C4A',
-                    light:   '#FF8A6A',
-                    dark:    '#D45233',
-                    glow:    'rgba(239,108,74,0.35)',
-                },
-                // ── Flip7 Sky Blue ───────────────────────────────────
-                sky: {
-                    DEFAULT: '#5DADE2',
-                    glow:    'rgba(93,173,226,0.30)',
-                },
-                // ── Flip7 Surface / Neutral ──────────────────────────
-                cream: '#FFF8E7',
+                // ── Semantic accents ─────────────────────────────────
+                gold:  { DEFAULT: '#B45309', light: '#D97706', dark: '#92400E', glow: 'rgba(180,83,9,0.12)' },
+                coral: { DEFAULT: '#DC2626', light: '#EF4444', dark: '#B91C1C', glow: 'rgba(220,38,38,0.12)' },
+                sky:   { DEFAULT: '#0369A1', glow: 'rgba(3,105,161,0.12)' },
+                // ── Surfaces & neutrals (slate) ──────────────────────
+                cream: '#F8FAFC',
                 surface: {
-                    base: '#EFF8F7',
+                    base: '#F8FAFC',
                     card: '#FFFFFF',
                 },
                 dark: {
-                    bg:       '#EFF8F7', // Flip7 Surface Base
+                    bg:       '#F8FAFC',
                     card:     '#FFFFFF',
-                    surface:  '#E8F6F5', // Teal BG tint
-                    elevated: '#D4EEEC',
+                    surface:  '#F1F5F9',
+                    elevated: '#E2E8F0',
                 },
-                border: { DEFAULT: '#C8E6E4' },
+                border: { DEFAULT: '#E2E8F0' },
                 text: {
-                    primary:   '#0D3B38',
-                    secondary: '#5A8A86',
+                    primary:   '#0F172A',
+                    secondary: '#64748B',
                 },
-                // ── Semantic ─────────────────────────────────────────
-                success: '#27AE60',
-                warning: '#FFD23F',
-                error:   '#EF6C4A', // Coral as error/warning accent
+                // ── Status ───────────────────────────────────────────
+                success: '#16A34A',
+                warning: '#B45309',
+                error:   '#DC2626',
             },
             fontFamily: {
-                sans:    ['Outfit', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                sans:    ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
                 mono:    ['JetBrains Mono', 'ui-monospace', 'monospace'],
-                display: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                display: ['Outfit', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
             },
             fontSize: {
-                '3xs': ['9px',  { lineHeight: '1.4' }],
+                '3xs': ['10px', { lineHeight: '1.4' }],
                 '2xs': ['11px', { lineHeight: '1.4' }],
                 xs:    ['12px', { lineHeight: '1.5' }],
                 sm:    ['13px', { lineHeight: '1.5' }],
@@ -83,74 +67,47 @@ export default {
                 xl:    ['20px', { lineHeight: '1.4' }],
             },
             fontWeight: {
-                extrabold: '800',
+                // Legacy pages use font-extrabold; render it as bold instead of 800
+                extrabold: '700',
             },
             letterSpacing: {
-                widest:  '0.2em',
-                wider:   '0.1em',
-                display: '0.05em',
+                widest:  '0.06em',
+                wider:   '0.04em',
+                display: '0.01em',
             },
             borderRadius: {
                 xs:      '4px',
-                sm:      '8px',
+                sm:      '6px',
                 DEFAULT: '8px',
-                md:      '16px',
-                lg:      '24px',
-                xl:      '32px',
+                md:      '10px',
+                lg:      '12px',
+                xl:      '16px',
                 full:    '9999px',
             },
             boxShadow: {
-                // Standard
-                sm:    '0 2px 8px rgba(0,0,0,0.08)',
-                md:    '0 4px 16px rgba(0,0,0,0.12)',
-                lg:    '0 8px 32px rgba(0,0,0,0.16)',
-                // Flip7 colored glow shadows
-                card:         '0 4px 20px rgba(43,168,162,0.10)',
-                modal:        '0 20px 40px rgba(30,140,134,0.12), 0 1px 3px rgba(0,0,0,0.04)',
-                'teal-glow':  '0 4px 20px rgba(43,168,162,0.30)',
-                'gold-glow':  '0 4px 20px rgba(255,210,63,0.40)',
-                'coral-glow': '0 4px 20px rgba(239,108,74,0.35)',
-                'sky-glow':   '0 4px 16px rgba(93,173,226,0.30)',
-                'focus':      '0 0 0 4px rgba(43,168,162,0.15)',
-                // Legacy alias
-                violet:       '0 0 24px rgba(43,168,162,0.20)',
-                'violet-sm':  '0 0 0 3px rgba(43,168,162,0.20)',
+                sm:    '0 1px 2px rgba(15,23,42,0.05)',
+                md:    '0 2px 4px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.06)',
+                lg:    '0 8px 24px rgba(15,23,42,0.10)',
+                card:  '0 1px 2px rgba(15,23,42,0.05)',
+                modal: '0 10px 40px rgba(15,23,42,0.14), 0 2px 8px rgba(15,23,42,0.06)',
+                focus: '0 0 0 3px rgba(15,118,110,0.15)',
+                // Legacy aliases — resolve to neutral shadows now
+                violet:      '0 1px 2px rgba(15,23,42,0.05)',
+                'violet-sm': '0 0 0 3px rgba(15,118,110,0.12)',
+                success:     '0 1px 2px rgba(15,23,42,0.05)',
             },
-            transitionDuration: { fast: '150ms', DEFAULT: '250ms' },
+            transitionDuration: { fast: '150ms', DEFAULT: '200ms' },
             transitionTimingFunction: {
-                bounce: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+                bounce: 'ease-out',
             },
             keyframes: {
-                'glow-pulse': {
-                    '0%, 100%': { opacity: '0.7', transform: 'scale(1.00)' },
-                    '50%':      { opacity: '1.0', transform: 'scale(1.03)' },
-                },
-                'coral-pulse': {
-                    '0%, 100%': { boxShadow: '0 4px 20px rgba(239,108,74,0.20)' },
-                    '50%':      { boxShadow: '0 4px 20px rgba(239,108,74,0.50)' },
-                },
-                'crown-bounce': {
-                    '0%':   { transform: 'rotate(-5deg) scale(1.0)' },
-                    '25%':  { transform: 'rotate(5deg) scale(1.1)' },
-                    '50%':  { transform: 'rotate(-3deg) scale(1.05)' },
-                    '75%':  { transform: 'rotate(3deg) scale(1.1)' },
-                    '100%': { transform: 'rotate(-5deg) scale(1.0)' },
-                },
                 'slide-up': {
-                    '0%':   { opacity: '0', transform: 'translateY(8px)' },
+                    '0%':   { opacity: '0', transform: 'translateY(4px)' },
                     '100%': { opacity: '1', transform: 'translateY(0)' },
-                },
-                'float': {
-                    '0%, 100%': { transform: 'translateY(0px)' },
-                    '50%':      { transform: 'translateY(-6px)' },
                 },
             },
             animation: {
-                'glow-pulse':   'glow-pulse 2s ease-in-out infinite',
-                'coral-pulse':  'coral-pulse 2s ease-in-out infinite',
-                'crown-bounce': 'crown-bounce 1.5s ease-in-out infinite',
-                'slide-up':     'slide-up 0.3s ease-out',
-                'float':        'float 3s ease-in-out infinite',
+                'slide-up': 'slide-up 0.2s ease-out',
             },
         },
     },

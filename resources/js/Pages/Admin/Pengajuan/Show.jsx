@@ -48,7 +48,7 @@ export default function Show({ pengajuan }) {
             text: `Apakah Anda yakin ingin menyetujui pengajuan ${pengajuan.kode_pengajuan}?`,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#7c3aed',
+            confirmButtonColor: '#0F766E',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Ya, Setujui',
             cancelButtonText: 'Batal',
@@ -62,7 +62,7 @@ export default function Show({ pengajuan }) {
                             title: 'Berhasil disetujui!',
                             text: 'Pengajuan BHP kini berstatus Approved.',
                             icon: 'success',
-                            confirmButtonColor: '#7c3aed',
+                            confirmButtonColor: '#0F766E',
                             timer: 2000,
                             timerProgressBar: true
                         });
@@ -78,7 +78,7 @@ export default function Show({ pengajuan }) {
             text: 'Stok fisik bahan di laboratorium akan dikurangi secara otomatis saat transaksi selesai.',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#10b981',
+            confirmButtonColor: '#16A34A',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Ya, Selesai!',
             cancelButtonText: 'Batal',
@@ -92,7 +92,7 @@ export default function Show({ pengajuan }) {
                             title: 'Transaksi Selesai!',
                             text: 'Bahan telah diserahkan fisik dan stok berhasil dikurangi.',
                             icon: 'success',
-                            confirmButtonColor: '#10b981',
+                            confirmButtonColor: '#16A34A',
                             timer: 2500,
                             timerProgressBar: true
                         });
@@ -103,7 +103,7 @@ export default function Show({ pengajuan }) {
                             title: 'Gagal Menyelesaikan!',
                             text: msg,
                             icon: 'error',
-                            confirmButtonColor: '#ef4444'
+                            confirmButtonColor: '#DC2626'
                         });
                     }
                 });
@@ -118,7 +118,7 @@ export default function Show({ pengajuan }) {
             text: 'Apakah Anda yakin ingin menolak permohonan bahan praktikum ini?',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#ef4444',
+            confirmButtonColor: '#DC2626',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Ya, Tolak!',
             cancelButtonText: 'Batal',
@@ -133,7 +133,7 @@ export default function Show({ pengajuan }) {
                             title: 'Ditolak!',
                             text: 'Pengajuan BHP telah ditolak.',
                             icon: 'info',
-                            confirmButtonColor: '#ef4444',
+                            confirmButtonColor: '#DC2626',
                             timer: 2000,
                             timerProgressBar: true
                         });

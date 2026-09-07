@@ -44,7 +44,7 @@ export default function Index({ users, filters }) {
             html: `Apakah Anda yakin ingin menghapus user <strong>"${u.name}"</strong>?<br><small class="text-gray-500">Semua data pengajuan terkait user ini akan terpengaruh.</small>`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#ef4444',
+            confirmButtonColor: '#DC2626',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Ya, Hapus!',
             cancelButtonText: 'Batal',
@@ -63,7 +63,7 @@ export default function Index({ users, filters }) {
                             icon: 'success',
                             background: '#ffffff',
                             color: '#1f2937',
-                            confirmButtonColor: '#7c3aed',
+                            confirmButtonColor: '#0F766E',
                             timer: 2000
                         });
                     }

@@ -25,7 +25,7 @@ export default function Index({ satuan, filters }) {
                     icon: 'success',
                     background: '#ffffff',
                     color: '#1f2937',
-                    confirmButtonColor: '#7c3aed',
+                    confirmButtonColor: '#0F766E',
                     timer: 2000
                 });
             } 
@@ -46,7 +46,7 @@ export default function Index({ satuan, filters }) {
                     icon: 'success',
                     background: '#ffffff',
                     color: '#1f2937',
-                    confirmButtonColor: '#7c3aed',
+                    confirmButtonColor: '#0F766E',
                     timer: 2000
                 });
             } 
@@ -58,7 +58,7 @@ export default function Index({ satuan, filters }) {
             text: `Apakah Anda yakin ingin menghapus satuan "${s.nama}"?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#ef4444',
+            confirmButtonColor: '#DC2626',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Ya, Hapus!',
             cancelButtonText: 'Batal',
@@ -77,7 +77,7 @@ export default function Index({ satuan, filters }) {
                             icon: 'success',
                             background: '#ffffff',
                             color: '#1f2937',
-                            confirmButtonColor: '#7c3aed',
+                            confirmButtonColor: '#0F766E',
                             timer: 2000
                         });
                     }
