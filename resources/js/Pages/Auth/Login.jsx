@@ -1,11 +1,19 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FlaskConical, Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Login({ status }) {
+    const { url } = usePage();
+
+    // Auto-fill kredensial akun demo dari query string, dipakai link demo
+    // di portfolio (mis. /login?email=...&password=...).
+    const demoParams = new URLSearchParams(url.split('?')[1] ?? '');
+    const demoEmail = demoParams.get('email');
+    const demoPassword = demoParams.get('password');
+
     const { data, setData, post, processing, errors } = useForm({
-        email: '',
-        password: '',
+        email: demoEmail ?? '',
+        password: demoPassword ?? '',
         remember: false,
     });
 
